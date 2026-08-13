@@ -1,0 +1,55 @@
+%%
+%% qpd-bootstrap.tex — Zero-dependency standalone detection
+%%
+%% \input this at the top of every problem file.
+%%
+%% If the file is the root document (no \QPDbooklet defined), this
+%% immediately emits \documentclass{QPDSingle}\begin{document}.
+%% If imported into a booklet (\QPDbooklet is defined), it's a no-op.
+%%
+%% Usage:
+%%
+%%   \input qpd-bootstrap
+%%
+%%   \begin{problem}{ID}{Name}[Setter][Score]
+%%     ...
+%%   \end{problem}
+%%
+%%   \begin{solution}{ID}
+%%     ...
+%%   \end{solution}
+%%
+%%   \input qpd-end
+%%
+%% To suppress answers in standalone mode, put this BEFORE the \input:
+%%
+%%   \let\QPDnoanswerslocal=1
+%%   \input qpd-bootstrap
+%%   ...
+%%   \input qpd-end
+%%
+%% To render ONLY the answer (no statement), put this BEFORE the \input:
+%%
+%%   \let\QPDanswersonlylocal=1
+%%   \input qpd-bootstrap
+%%   ...
+%%   \input qpd-end
+%%
+\ifdefined\QPDbooklet\else
+  \ifdefined\QPDnoanswerslocal\else
+    \def\QPDnoanswerslocal{0}%
+  \fi
+  \ifdefined\QPDanswersonlylocal\else
+    \def\QPDanswersonlylocal{0}%
+  \fi
+  \if\QPDanswersonlylocal1%
+    \documentclass[answersonly]{QPDSingle}%
+  \else
+    \if\QPDnoanswerslocal1%
+      \documentclass[noanswers]{QPDSingle}%
+    \else
+      \documentclass{QPDSingle}%
+    \fi
+  \fi
+  \begin{document}%
+\fi

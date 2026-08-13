@@ -1,0 +1,21 @@
+{
+  "id": "20260810",
+  "date": "2026-08-10",
+  "name": "Flash Sync Speed",
+  "setter": [
+    "Jason Zhang"
+  ],
+  "score": "10",
+  "status": "",
+  "topic": "optics",
+  "difficulty": 4,
+  "tags": [
+    "optics",
+    "photography",
+    "rolling shutter"
+  ],
+  "open": false,
+  "resources": [
+    "CAS"
+  ]
+}

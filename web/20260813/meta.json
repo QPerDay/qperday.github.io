@@ -1,0 +1,21 @@
+{
+  "id": "20260813",
+  "date": "2026-08-13",
+  "name": "Tossing the Wok",
+  "setter": [
+    "Sean Li"
+  ],
+  "score": "7",
+  "status": "",
+  "topic": "mechanics",
+  "difficulty": 4,
+  "tags": [
+    "mechanics",
+    "rotation",
+    "energy",
+    "kinematics",
+    "rigid body"
+  ],
+  "open": true,
+  "resources": []
+}

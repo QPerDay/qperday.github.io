@@ -1,0 +1,42 @@
+Problem content license — CC BY 4.0
+===================================
+
+Copyright (c) 2026 QPD problem-setting group (SSBS '28).
+
+The problem content — the `YYYYMMDD.tex` files at the repository root and any
+derived statements or solutions — is licensed under the Creative Commons
+Attribution 4.0 International License.
+
+    https://creativecommons.org/licenses/by/4.0/
+
+You are free to share and adapt the problems for any purpose, including
+commercial use, provided you:
+
+  1. give appropriate credit,
+  2. provide a link to the license, and
+  3. indicate if changes were made.
+
+Required attribution
+--------------------
+
+Credit both the individual setter(s) and the QPD problem-setting group:
+
+    "Problem by <Setter>, QPD problem-setting group (SSBS '28)."
+
+For problems with multiple setters, list all of them:
+
+    "Problem by Alice Liu and Ryan Huang, QPD problem-setting group (SSBS '28)."
+
+The setter names are recorded in each problem's `\meta{setter}` field.
+
+Courtesy request
+----------------
+
+Attribution is a legal requirement; a heads-up is a kindness. If you adapt or
+reuse a problem, we would be glad to hear about it — please reach out to the
+QPD problem-setting group. This is not a legal condition, just a courtesy.
+
+Note: the tooling — `QPDBooklet.cls`, `QPDSingle.cls`, `qpd-common.sty`,
+`qpd-bootstrap.tex`, `qpd-end.tex`, `TEMPLATE.tex`, `export.sh`,
+`export_web.py`, and the contents of `site/` — is licensed separately under
+the MIT License (see `LICENSE`).

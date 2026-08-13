@@ -1,0 +1,20 @@
+{
+  "id": "20260725",
+  "date": "2026-07-25",
+  "name": "Wen Motors",
+  "setter": [
+    "Sean Li"
+  ],
+  "score": "10",
+  "status": "",
+  "topic": "control theory",
+  "difficulty": 4,
+  "tags": [
+    "control theory",
+    "feedback",
+    "dynamics",
+    "differential equations"
+  ],
+  "open": false,
+  "resources": []
+}

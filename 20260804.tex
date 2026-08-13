@@ -1,0 +1,112 @@
+\input qpd-bootstrap
+
+\begin{problem}{20260804}
+  \meta{name}{Plasma Cannon Launcher}
+  \meta{setter}{Elton Liu}
+  \meta{score}{13}
+  \meta{status}{err}
+  \meta{topic}{mechanics}
+  \meta{tags}{mechanics, rotation, projectile motion, energy}
+
+Kai'Sa, the Daughter of the Void, fires plasma bolts from a device that can be modelled as an \emph{elastic rotating launcher}.  While charging a shot, Kai'Sa spins up a lightweight rigid launch arm of length $L$ (the arm's own mass is negligible); a plasma bolt of mass $m$ is fixed to the arm's tip.
+
+During the charging phase the arm rotates counter-clockwise about a fixed pivot, starting from rest at the horizontal.  A variable external torque turns the arm against a torsional ``Hextech'' elastic structure, which produces a restoring torque
+\[
+  \tau = -k\theta ,
+\]
+where $\theta$ is the arm's angle from the horizontal.  When the arm reaches a maximum angle $\theta_{0}$, the bolt is released and flies off along the tangent, undergoing projectile motion under gravity $g$.  Air resistance, friction, the arm's mass, and all energy losses are neglected.
+
+Given quantities: $m$, $L$, $k$, $\theta_{0}$, $g$.
+
+\begin{assumptions}
+  \item The arm is rigid and massless; the bolt is a point particle.
+  \item The torsional spring obeys the linear law $\tau = -k\theta$.
+  \item During charging, gravity's torque on the bolt is neglected (it is reintroduced only in Q5).
+\end{assumptions}
+
+\begin{questions}
+  \item \textbf{Work in the charging phase.}
+        Find the total work done by the external torque in charging the arm from $\theta = 0$ to $\theta = \theta_{0}$ against the torsional spring.
+
+  \item \textbf{Rotational energy and angular speed.}
+        At the instant of release, find
+        \begin{enumerate}[label=\roman*.]
+          \item the system's angular speed $\omega$;
+          \item the bolt's instantaneous speed $v$;
+          \item the bolt's instantaneous centripetal acceleration $a_c$.
+        \end{enumerate}
+
+  \item \textbf{Angular momentum: conserved or not?}
+        A student claims: ``from the charging rotation through the instant of release, the system's angular momentum about the pivot is conserved.''  Judge whether this is right or wrong, and give a rigorous physical argument using torque and the angular-momentum theorem.
+
+  \item \textbf{Projectile motion and mechanical energy.}
+        The launch point is at height $H$, and the launch angle is $\theta_{0}$ (the velocity points along the tangent, at angle $\theta_{0}$ above the horizontal).  The bolt flies off and lands on the ground at height $0$.
+        \begin{enumerate}[label=\roman*.]
+          \item Using conservation of mechanical energy, write an expression for the landing speed $v_f$ (no need to work out the kinematics).
+          \item If $\theta_{0}$ is very small (small-angle approximation), explain briefly how the horizontal range changes as $\theta_{0}$ increases, and give the physical reason.
+        \end{enumerate}
+
+  \item \textbf{Model extension: critical equilibrium.}
+        Now include the torque that gravity exerts on the bolt.  Find the equilibrium angle position(s) $\theta$ at which the bolt can remain in static equilibrium (net torque zero).
+\end{questions}
+
+\end{problem}
+
+\begin{solution}{20260804}
+
+\subsection*{Q1. Work in the charging phase}
+
+The external torque must overcome the restoring torque $-\k\theta$ at every instant, so the work it does is
+\[
+  W = \int_{0}^{\theta_{0}} k\theta \,\dd\theta
+    = \boxed{\tfrac{1}{2}k\theta_{0}^{2}}.
+\]
+
+\subsection*{Q2. Rotational energy and angular speed}
+
+All the work done in charging is stored in the spring and, at release, converted to the bolt's rotational kinetic energy.  The arm is massless, so the moment of inertia about the pivot is $I = mL^{2}$:
+\[
+  \tfrac{1}{2}k\theta_{0}^{2} = \tfrac{1}{2}I\omega^{2}
+  = \tfrac{1}{2}mL^{2}\omega^{2}.
+\]
+
+\begin{enumerate}[label=\roman*.]
+  \item $\displaystyle \omega = \theta_{0}\sqrt{\frac{k}{mL^{2}}} = \boxed{\frac{\theta_{0}}{L}\sqrt{\frac{k}{m}}}$.
+  \item $\displaystyle v = \omega L = \boxed{\theta_{0}\sqrt{\frac{k}{m}}}$.
+  \item $\displaystyle a_c = \omega^{2}L = \boxed{\frac{\theta_{0}^{2}k}{mL}}$.
+\end{enumerate}
+
+\subsection*{Q3. Angular momentum: conserved or not?}
+
+\textbf{Wrong.}  The angular-momentum theorem states $\dfrac{\dd L}{\dd t} = \tau_{\text{net}}$, where $\tau_{\text{net}}$ is the net external torque about the pivot.  During charging the torsional spring exerts a nonzero torque $-\k\theta$ on the arm, and this torque is not balanced by anything --- it is precisely the external torque being worked against.  Since $\tau_{\text{net}} \ne 0$, the angular momentum is \emph{not} conserved.  (After release, gravity also exerts a moment about the original pivot on the freely flying bolt, further changing its angular momentum.)
+
+\subsection*{Q4. Projectile motion and mechanical energy}
+
+\begin{enumerate}[label=\roman*.]
+  \item After release the only force doing work is gravity, so mechanical energy is conserved:
+  \[
+    \tfrac{1}{2}mv_{f}^{2} = \tfrac{1}{2}mv^{2} + mgH
+    \;\Longrightarrow\;
+    \boxed{v_{f} = \sqrt{v^{2} + 2gH}}.
+  \]
+  Substituting $v = \theta_{0}\sqrt{k/m}$ gives $v_{f} = \sqrt{\dfrac{\theta_{0}^{2}k}{m} + 2gH}$.
+
+  \item For small $\theta_{0}$, the horizontal range \emph{increases} as $\theta_{0}$ increases.  Physically, the horizontal velocity $v\cos\theta_{0}$ barely changes (it is $\approx v$), while the upward velocity $v\sin\theta_{0}$ grows roughly linearly with $\theta_{0}$; a larger upward velocity means a longer time of flight, which dominates, so the bolt travels farther.  (The exact range from height $H$ grows as $\dfrac{v^{2}}{g}\theta_{0} + v\sqrt{2H/g}$ for small $\theta_{0}$.)
+\end{enumerate}
+
+\subsection*{Q5. Model extension: critical equilibrium}
+
+With the bolt at the tip, gravity exerts a torque about the pivot equal to $-mgL\cos\theta$ (the lever arm is the horizontal distance $L\cos\theta$ from the pivot to the bolt).  The spring exerts $-k\theta$, so static equilibrium requires
+\[
+  -k\theta - mgL\cos\theta = 0
+  \;\Longrightarrow\;
+  \boxed{k\theta + mgL\cos\theta = 0}.
+\]
+For $\theta > 0$ both torques point the same way (back toward horizontal), so there is no equilibrium above horizontal.  The balance is possible only \emph{below} horizontal, where the spring pulls upward and gravity pulls downward; there the equilibrium angle solves the transcendental equation
+\[
+  \boxed{\theta = -\frac{mgL}{k}\cos\theta}.
+\]
+
+\end{solution}
+
+\input qpd-end

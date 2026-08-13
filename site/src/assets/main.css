@@ -1,0 +1,146 @@
+/* QPD site design system.
+ *
+ * Deliberately nLab-adjacent: dense, content-first, high-contrast,
+ * system fonts, minimal chrome.  Every component consumes the tokens
+ * below rather than hard-coding colors/spacing.
+ */
+
+:root {
+  /* Color */
+  --c-fg: #1a1a1a;
+  --c-muted: #5a5a5a;
+  --c-faint: #888888;
+  --c-border: #e2e2e2;
+  --c-border-strong: #c4c4c4;
+
+  --c-accent: #3b6ea5;         /* links */
+  --c-accent-strong: #1c3d5a;  /* active / hover-strong */
+  --c-accent-bg: #eef3f8;      /* tag background */
+
+  --c-warn-fg: #8a6d1a;
+  --c-warn-bg: #fdf6e3;
+
+  /* Radius */
+  --radius: 6px;
+  --radius-pill: 999px;
+
+  /* Spacing (base 4px) */
+  --s1: 0.25rem;
+  --s2: 0.5rem;
+  --s3: 0.75rem;
+  --s4: 1rem;
+  --s6: 1.5rem;
+
+  /* Typography */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono',
+    monospace;
+  --measure: 60rem; /* max content width */
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--c-fg);
+  background: #fff;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.2;
+}
+
+a {
+  color: var(--c-accent);
+}
+a:hover {
+  color: var(--c-accent-strong);
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+}
+
+/* ---------- shared primitives ---------- */
+
+/* Unstyled vertical list of cards/rows. */
+.list {
+  list-style: none;
+  padding: 0;
+  margin: var(--s4) 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+
+/* A bordered row that links somewhere.  Layout (grid columns / flex)
+ * stays in the consumer; the look lives here. */
+.card {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: inherit;
+}
+.card:hover {
+  border-color: var(--c-accent);
+}
+
+/* Monospace problem/setter identifier, muted. */
+.id {
+  font-family: var(--font-mono);
+  color: var(--c-faint);
+}
+
+/* Secondary / count text. */
+.count {
+  color: var(--c-muted);
+}
+
+/* The problem name inside a card. */
+.name {
+  font-weight: 500;
+}
+
+/* Pill tag (topics/tags). */
+.tag {
+  display: inline-block;
+  background: var(--c-accent-bg);
+  color: var(--c-accent);
+  border-radius: var(--radius-pill);
+  padding: 0.1rem 0.6rem;
+  font-size: 0.8rem;
+}
+
+/* Full-width PDF viewer frame. */
+.pdf {
+  width: 100%;
+  min-height: 80vh;
+  border: 1px solid var(--c-border);
+  margin: var(--s4) 0;
+}
+
+/* Callout / notice. */
+.note {
+  padding: 0.6rem 0.8rem;
+  border-radius: var(--radius);
+}
+.note--warn {
+  color: var(--c-warn-fg);
+  background: var(--c-warn-bg);
+}

@@ -1,0 +1,11 @@
+%%
+%% qpd-end.tex — End-of-file for standalone problem files
+%%
+%% \input this at the bottom of every problem file.
+%%
+%% If standalone, emits \end{document}.  If imported into a booklet
+%% (\QPDbooklet is defined), it's a no-op.
+%%
+\ifdefined\QPDbooklet\else
+  \end{document}%
+\fi

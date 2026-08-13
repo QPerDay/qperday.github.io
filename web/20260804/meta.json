@@ -1,0 +1,20 @@
+{
+  "id": "20260804",
+  "date": "2026-08-04",
+  "name": "Plasma Cannon Launcher",
+  "setter": [
+    "Elton Liu"
+  ],
+  "score": "13",
+  "status": "err",
+  "topic": "mechanics",
+  "difficulty": null,
+  "tags": [
+    "mechanics",
+    "rotation",
+    "projectile motion",
+    "energy"
+  ],
+  "open": false,
+  "resources": []
+}

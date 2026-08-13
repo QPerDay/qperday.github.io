@@ -1,0 +1,76 @@
+name: Deploy site to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Allow only one deployment at a time, and grant Pages the permissions it
+# needs (read contents, write pages, mint an OIDC token for deploy-pages).
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # --- Node + pnpm ---
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: site/pnpm-lock.yaml
+
+      # --- Build the Vue site ---
+      # The web/ export (JSON + PDFs) is committed to the repo after being
+      # compiled locally with `./export.sh --web`.  CI does NOT recompile the
+      # TeX — it just consumes the committed export, so no TeX install is
+      # needed here.
+      - name: Sync committed web export into site
+        working-directory: site
+        run: pnpm sync
+
+      - name: Install site dependencies
+        working-directory: site
+        run: pnpm install --frozen-lockfile
+
+      - name: Build site
+        working-directory: site
+        # Hosted at the domain root (https://qperday.github.io/), so Vite's
+        # base is `/` (set in vite.config.ts).
+        run: pnpm build
+
+      # GitHub Pages cannot run a SPA server, so unmatched deep links
+      # (e.g. /problem/20260803) fall through to 404.html; serving the app
+      # there lets vue-router resolve the route client-side.
+      - name: Add SPA fallback
+        run: cp site/dist/index.html site/dist/404.html
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

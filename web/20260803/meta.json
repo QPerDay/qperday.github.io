@@ -1,0 +1,20 @@
+{
+  "id": "20260803",
+  "date": "2026-08-03",
+  "name": "Three Coins Again",
+  "setter": [
+    "Alice Liu"
+  ],
+  "score": "12",
+  "status": "",
+  "topic": "mechanics",
+  "difficulty": 4,
+  "tags": [
+    "mechanics",
+    "collisions",
+    "oscillations",
+    "momentum"
+  ],
+  "open": false,
+  "resources": []
+}

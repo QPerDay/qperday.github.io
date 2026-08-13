@@ -1,0 +1,90 @@
+\input qpd-bootstrap
+
+\begin{problem}{20260808}
+  \meta{name}{Binary Star System}
+  \meta{setter}{Sophie Chen}
+  \meta{score}{12}
+  \meta{topic}{gravitation}
+  \meta{difficulty}{4}
+  \meta{tags}{gravitation, orbital motion, Kepler}
+
+A binary star system consists of two stars orbiting their common centre of mass.  Star A has mass $M_A = 4\times10^{30}\,\mathrm{kg}$ and Star B has mass $M_B = 1\times10^{30}\,\mathrm{kg}$.  The straight-line distance between the two stars is $D = 5.0\times10^{12}\,\mathrm{m}$, and the gravitational constant is $G = 6.67\times10^{-11}\,\mathrm{N\,m^{2}\,kg^{-2}}$.  The two stars orbit their shared centre of mass in perfect uniform circular motion.
+
+\begin{assumptions}
+  \item The stars are point masses; only their mutual gravitational attraction acts.
+  \item The orbits are circular and coplanar, about the common centre of mass.
+\end{assumptions}
+
+\begin{questions}
+  \item \textbf{Equal and Opposite Forces.}
+        Compare the magnitude of the gravitational pull that Star A exerts on Star B with the pull that Star B exerts on Star A.  State whether they are larger, smaller, or equal, and name the physics law that supports your conclusion.
+
+  \item \textbf{The Zero-Force Point.}
+        Along the line connecting Star A and Star B there is a unique point where the total gravitational force on a tiny test mass $m$ placed at that position cancels out to zero.
+        \begin{enumerate}[label=\arabic*.]
+          \item Let $x$ be the distance from Star A to this zero-force point.  Write the gravitational force-balance equation for the test mass.
+          \item Solve numerically to calculate the value of $x$.
+        \end{enumerate}
+
+  \item \textbf{Orbital Period.}
+        The zero-force point from part (b) is \emph{not} the system's centre of mass.  Both stars revolve around their common centre of mass with identical period $T$.
+        \begin{enumerate}[label=\arabic*.]
+          \item Write the equation equating the mutual gravitational force to the centripetal force for Star A.
+          \item Write the matching force equation for Star B.
+          \item Combine the two equations to derive the modified Kepler's Third Law for binary stars, then substitute the given numbers to solve for the orbital period $T$ of the system.
+        \end{enumerate}
+
+  \item \textbf{Orbital Speeds.}
+        Derive and write a single equality relating $M_A$, $M_B$, $v_A$, and $v_B$.  No numerical calculation is needed here.
+\end{questions}
+
+\end{problem}
+
+\begin{solution}{20260808}
+
+\subsection*{Q1. Equal and Opposite Forces}
+
+By Newton's Third Law the two pulls are equal and opposite: $\abs{\arr{F}_{A\to B}} = \abs{\arr{F}_{B\to A}}$.
+
+\subsection*{Q2. The Zero-Force Point}
+
+\textbf{(1)}  On the line AB the forces on $m$ are collinear and opposite, so they cancel when
+\[
+\frac{G M_A m}{x^{2}} = \frac{G M_B m}{(D-x)^{2}}
+\;\Longrightarrow\;
+\frac{M_A}{x^{2}} = \frac{M_B}{(D-x)^{2}}.
+\]
+
+\textbf{(2)}  Taking square roots and solving:
+\[
+x = D\,\frac{\sqrt{M_A}}{\sqrt{M_A}+\sqrt{M_B}}
+  = (5.0\times10^{12})\,\frac{2\times10^{15}}{3\times10^{15}}
+  = \boxed{3.3\times10^{12}\ \mathrm{m}}.
+\]
+
+\subsection*{Q3. Orbital Period}
+
+Let $r_A + r_B = D$ be the orbital radii about the common centre of mass, with $\omega = 2\pi/T$.  Equating the mutual force to the centripetal force for each star,
+\[
+\frac{G M_A M_B}{D^{2}} = M_A\omega^{2} r_A = M_B\omega^{2} r_B.
+\]
+With $M_A r_A = M_B r_B$ and $r_A+r_B=D$, we get $r_A = \dfrac{M_B D}{M_A+M_B}$; substituting and using $\omega = 2\pi/T$ gives the modified Kepler's Third Law:
+\[
+\boxed{T^{2} = \frac{4\pi^{2}D^{3}}{G(M_A+M_B)}}.
+\]
+Numerically, with $M_A+M_B = 5.0\times10^{30}\,\mathrm{kg}$:
+\[
+T = 2\pi\sqrt{\frac{(5.0\times10^{12})^{3}}{(6.67\times10^{-11})(5.0\times10^{30})}}
+  = \boxed{3.8\times10^{9}\ \mathrm{s}} \approx 122\ \text{yr}.
+\]
+
+\subsection*{Q4. Orbital Speeds}
+
+Same angular speed means $v_A/v_B = r_A/r_B = M_B/M_A$, hence
+\[
+\boxed{M_A v_A = M_B v_B}.
+\]
+
+\end{solution}
+
+\input qpd-end

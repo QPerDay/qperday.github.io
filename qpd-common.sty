@@ -1,0 +1,844 @@
+%%
+%% qpd-common.sty — Shared environments and machinery for QPD problem sets
+%%
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{qpd-common}[2026/08/12 v0.2 QPD Common]
+
+% ----- dependencies -----
+\RequirePackage{etoolbox}
+\RequirePackage{amsmath,amssymb,mathtools}
+\RequirePackage{enumitem}
+\RequirePackage{environ}
+\RequirePackage{graphicx}
+\RequirePackage{xcolor}
+\RequirePackage{tikz}
+\usetikzlibrary{decorations.pathmorphing,positioning,arrows.meta}
+\RequirePackage{pgfcalendar}
+\RequirePackage{cancel}
+\RequirePackage{caption}
+\RequirePackage[a4paper,margin=0.85in]{geometry}
+\RequirePackage{hyperref}
+\RequirePackage{trimspaces}
+
+% ----- Chinese (CJK) support -----
+% Loaded only under XeLaTeX/LuaLaTeX.  Compile Chinese problems with
+% `xelatex`; English-only problems still work with plain `pdflatex`.
+% The CJK font falls back gracefully: Songti SC on macOS, Noto Serif CJK
+% on Linux CI runners.
+\RequirePackage{iftex}
+\ifXeTeX
+  \RequirePackage{xeCJK}
+  \IfFontExistsTF{Songti SC}%
+    {\setCJKmainfont{Songti SC}}%
+    {\setCJKmainfont{Noto Serif CJK SC}}%
+\fi
+
+% ===================================================================
+% MATH SHORTHANDS
+% ===================================================================
+
+% --- bold vector ---
+\newcommand{\arr}[1]{\vec{\mathbf{#1}}}
+
+% --- blackboard bold ---
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\QQ}{\mathbb{Q}}
+
+% --- upright differentials ---
+\newcommand{\dd}[1]{\mathop{}\!\mathrm{d}#1}
+\newcommand{\dx}{\dd{x}}
+\newcommand{\dy}{\dd{y}}
+\newcommand{\dz}{\dd{z}}
+\newcommand{\dt}{\dd{t}}
+\newcommand{\dr}{\dd{r}}
+\newcommand{\ds}{\dd{s}}
+\newcommand{\du}{\dd{u}}
+\newcommand{\dv}{\dd{v}}
+\newcommand{\dtheta}{\dd{\theta}}
+
+% --- partial derivative ---
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+
+% --- delimiters ---
+\newcommand{\abs}[1]{\left\lvert #1 \right\rvert}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\inner}[2]{\left\langle #1 ,\, #2 \right\rangle}
+
+% --- operators ---
+\newcommand{\dom}{\operatorname{dom}}
+\newcommand{\ran}{\operatorname{ran}}
+\newcommand{\sgn}{\operatorname{sgn}}
+\newcommand{\im}{\operatorname{im}}
+
+% --- parentheses / brackets ---
+\newcommand{\parens}[1]{\left( #1 \right)}
+\newcommand{\bracks}[1]{\left[ #1 \right]}
+\newcommand{\braces}[1]{\left\{ #1 \right\}}
+
+% --- Greek shorthands ---
+\newcommand{\eps}{\varepsilon}
+\newcommand{\ph}{\varphi}
+\newcommand{\lam}{\lambda}
+
+% ===================================================================
+% DATE PARSING
+% ===================================================================
+% IDs are YYYYMMDD (e.g. 20260715 → "July 15, 2026").
+% Raw ID stays for \label, csname keys, and validation messages.
+% Display layer uses \qpd@prettydate.
+% Month extraction: YYYYMMDD → YYYYMM (e.g. 20260715 → 202607).
+
+\newcommand{\qpd@monthname}[1]{%
+  \ifcase#1\or
+    January\or February\or March\or April\or May\or June\or
+    July\or August\or September\or October\or November\or December%
+  \fi
+}
+
+\newcommand{\qpd@formatday}[2]{%
+  \ifnum#1=0 #2\else #1#2\fi
+}
+
+\newcommand{\qpd@prettydate}[1]{%
+  \expandafter\qpd@prettydate@a#1\@nil
+}
+\def\qpd@prettydate@a#1#2#3#4#5#6#7#8\@nil{%
+  \qpd@monthname{#5#6} %
+  \qpd@formatday{#7}{#8}, %
+  #1#2#3#4%
+}
+
+% fully expandable: YYYYMMDD → YYYYMM
+% Two-step expansion so @-issues during aux-read are avoided.
+\def\qpd@extractmonth#1{\qpd@extractmonth@a#1\@nil}
+\def\qpd@extractmonth@a#1#2#3#4#5#6#7#8\@nil{#1#2#3#4#5#6}
+
+% YYYYMMDD → "MMDD" (e.g., 20260718 → "0718").
+\newcommand{\qpd@shortdate}[1]{%
+  \expandafter\qpd@shortdate@a#1\@nil
+}
+\def\qpd@shortdate@a#1#2#3#4#5#6#7#8\@nil{#5#6#7#8}
+
+% Weekday name (0=Monday in pgfcalendar convention).
+\newcommand{\qpd@weekdayname}[1]{%
+  \ifcase#1 Mon\or Tue\or Wed\or Thu\or Fri\or Sat\or Sun\fi}
+
+% YYYYMMDD → "Weekday, D" for TOC display.
+\newcommand{\qpd@tocdate}[1]{%
+  \expandafter\qpd@tocdate@i#1\@nil
+}
+\def\qpd@tocdate@i#1#2#3#4#5#6#7#8\@nil{%
+  \pgfcalendardatetojulian{#1#2#3#4-#5#6-#7#8}{\qpd@tocjulian}%
+  \pgfcalendarjuliantoweekday{\qpd@tocjulian}{\qpd@tocwkday}%
+  \qpd@weekdayname{\qpd@tocwkday}, \qpd@formatday{#7}{#8}%
+}
+\newcount\qpd@tocjulian
+\newcount\qpd@tocwkday
+
+% YYYYMM → "August 2026"
+\newcommand{\qpd@prettymonthname}[1]{%
+  \expandafter\qpd@prettymonthname@a#1\@nil
+}
+\def\qpd@prettymonthname@a#1#2#3#4#5#6\@nil{%
+  \qpd@monthname{#5#6} #1#2#3#4%
+}
+
+% Month number → abbreviated name ("Aug").
+\newcommand{\qpd@monthshortname}[1]{%
+  \ifcase#1\or
+    Jan\or Feb\or Mar\or Apr\or May\or Jun\or
+    Jul\or Aug\or Sep\or Oct\or Nov\or Dec\fi
+}
+
+% YYYYMM → "2026 Aug"
+\newcommand{\qpd@prettymonthshort}[1]{%
+  \expandafter\qpd@prettymonthshort@a#1\@nil
+}
+\def\qpd@prettymonthshort@a#1#2#3#4#5#6\@nil{%
+  #1#2#3#4 \qpd@monthshortname{#5#6}%
+}
+
+% Month tracking (booklet mode).
+% Initialized empty; first problem sets it via \xdef.
+\def\qpd@currentmonth{}
+
+% ===================================================================
+% BOOLEANS
+% ===================================================================
+
+\newbool{qpd@renderanswers}
+\setbool{qpd@renderanswers}{false}
+
+\newbool{qpd@draft}
+\setbool{qpd@draft}{false}
+
+% Answer-only mode: suppress the problem statement and render only the
+% solution.  Used by the web export to produce a standalone answer.pdf.
+\newbool{qpd@answersonly}
+\setbool{qpd@answersonly}{false}
+
+\newbool{qpd@strict}
+\setbool{qpd@strict}{false}
+
+% ----- user-facing toggles -----
+\newcommand{\RenderAnswersTrue}{\setbool{qpd@renderanswers}{true}}
+\newcommand{\RenderAnswersFalse}{\setbool{qpd@renderanswers}{false}}
+
+% ===================================================================
+% DATA STORAGE
+% ===================================================================
+
+\def\qpd@problemorder{}
+\def\qpd@solutionorder{}
+\newwrite\qpd@setterfile
+
+\newcommand{\qpd@recordproblem}[1]{%
+  \ifx\qpd@problemorder\@empty
+    \xdef\qpd@problemorder{#1}%
+  \else
+    \xdef\qpd@problemorder{\qpd@problemorder,#1}%
+  \fi
+}
+
+\newcommand{\qpd@recordsolution}[1]{%
+  \ifx\qpd@solutionorder\@empty
+    \xdef\qpd@solutionorder{#1}%
+  \else
+    \xdef\qpd@solutionorder{\qpd@solutionorder,#1}%
+  \fi
+}
+
+% Field registry: the single source of truth for problem metadata.
+% Add a field by appending its key to this comma list — nothing else.
+\def\qpd@metafields{name,setter,score,status,topic,difficulty,tags,open,resources}
+
+% Generic storage: one namespace qpd@meta@FIELD@ID.
+\newcommand{\qpd@setmeta}[3]{%
+  \expandafter\gdef\csname qpd@meta@#2@#1\endcsname{#3}%
+}
+\newcommand{\qpd@getmeta}[2]{\csname qpd@meta@#2@#1\endcsname}
+
+% Thin sugar wrappers (renderers use these for readability).
+% These expand DIRECTLY to \csname (single level) so they work inside
+% \edef / \write like the original per-field macros did.
+\newcommand{\qpd@getname}[1]{\csname qpd@meta@name@#1\endcsname}
+\newcommand{\qpd@getsetter}[1]{\csname qpd@meta@setter@#1\endcsname}
+\newcommand{\qpd@getscore}[1]{\csname qpd@meta@score@#1\endcsname}
+
+% The problem currently being declared (set by \begin{problem}).
+\def\qpd@currentid{}
+
+% User-facing KV declaration: \meta{key}{value}.
+% Sets the value in memory AND writes it directly to .aux (the value is a
+% plain argument here, so it serialises without the \csname-in-\write trap).
+\newcommand{\meta}[2]{%
+  \qpd@setmeta{\qpd@currentid}{#1}{#2}%
+  \immediate\write\@auxout{%
+    \string\qpd@metaset{\qpd@currentid}{#1}{\unexpanded{#2}}%
+  }%
+  % Collect unique setters for the foreword while we have the plain value.
+  \def\qpd@tmpfield{#1}%
+  \ifdefstring{\qpd@tmpfield}{setter}{\qpd@recordsetter@toc{#2}}{}%
+}
+
+% Display prefix derived from the status field.
+% status=err -> "[ERR] "; otherwise empty.  Generalisable to a tag table.
+\newcommand{\qpd@statusprefix}[1]{%
+  \ifcsname qpd@meta@status@#1\endcsname
+    \edef\qpd@tmpstat{\qpd@getmeta{#1}{status}}%
+    \ifdefstring{\qpd@tmpstat}{err}{[ERR] }{}%
+  \fi
+}
+
+\newcommand{\qpd@storesolution}[2]{%
+  \expandafter\gdef\csname qpd@solution@#1\endcsname{#2}%
+}
+\newcommand{\qpd@getsolution}[1]{\csname qpd@solution@#1\endcsname}
+
+% Month data (built from .aux during read-back, and from body traversal).
+\def\qpd@monthorder{}
+
+\newcommand{\qpd@recordmonth}[1]{%
+  \ifcsname qpd@monthseen@#1\endcsname\else
+    \ifx\qpd@monthorder\@empty
+      \xdef\qpd@monthorder{#1}%
+    \else
+      \xdef\qpd@monthorder{\qpd@monthorder,#1}%
+    \fi
+    \expandafter\gdef\csname qpd@monthseen@#1\endcsname{1}%
+  \fi
+}
+
+\newcommand{\qpd@addproblem@month}[1]{%
+  \edef\qpd@tmpmonth{\qpd@extractmonth{#1}}%
+  \expandafter\qpd@recordmonth\expandafter{\qpd@tmpmonth}%
+  \ifcsname qpd@monthidseen@#1\endcsname\else
+    \ifcsname qpd@monthprobs@\qpd@tmpmonth\endcsname
+      \expandafter\xdef\csname qpd@monthprobs@\qpd@tmpmonth\endcsname{%
+        \csname qpd@monthprobs@\qpd@tmpmonth\endcsname,#1}%
+    \else
+      \expandafter\xdef\csname qpd@monthprobs@\qpd@tmpmonth\endcsname{#1}%
+    \fi
+    \expandafter\gdef\csname qpd@monthidseen@#1\endcsname{1}%
+  \fi
+}
+
+% ===================================================================
+% VALIDATION: IMMEDIATE CHECKS
+% ===================================================================
+
+\newcommand{\qpd@checkproblemdup}[1]{%
+  \ifcsname qpd@problemseen@#1\endcsname
+    \PackageError{qpd-common}{Duplicate problem ID: #1}{}%
+  \fi
+  \expandafter\gdef\csname qpd@problemseen@#1\endcsname{1}%
+}
+\newcommand{\qpd@checksolutiondup}[1]{%
+  \ifcsname qpd@solution@#1\endcsname
+    \PackageError{qpd-common}{Duplicate solution for problem: #1}{}%
+  \fi
+}
+
+% ===================================================================
+% VALIDATION: DEFERRED WARNINGS (via .aux)
+% ===================================================================
+
+\def\qpd@warnings{}
+
+\newcommand{\qpd@addwarning}[1]{%
+  \ifx\qpd@warnings\@empty
+    \def\qpd@warnings{#1}%
+  \else
+    \gappto{\qpd@warnings}{\par#1}%
+  \fi
+}
+
+\newcommand{\qpd@aux@warnmissingsol}[1]{%
+  \qpd@addwarning{No solution found for problem #1}%
+}
+\newcommand{\qpd@aux@warnorphansol}[1]{%
+  \qpd@addwarning{Solution #1 has no matching problem}%
+}
+
+% NOTE: metadata is serialised to .aux directly by \meta (see above).
+% No separate writer is needed.
+
+\newcommand{\qpd@writeauxwarnings}{%
+  \@for\qpd@id:=\qpd@problemorder\do{%
+    \ifcsname qpd@solution@\qpd@id\endcsname\else
+      \ifbool{qpd@strict}{%
+        \PackageError{qpd-common}{Missing solution for problem \qpd@id}{}%
+      }{%
+        \immediate\write\@auxout{\string\qpd@aux@warnmissingsol{\qpd@id}}%
+      }%
+    \fi
+  }%
+  \@for\qpd@id:=\qpd@solutionorder\do{%
+    \ifcsname qpd@problemseen@\qpd@id\endcsname\else
+      \ifbool{qpd@strict}{%
+        \PackageError{qpd-common}{Solution \qpd@id has no matching problem}{}%
+      }{%
+        \immediate\write\@auxout{\string\qpd@aux@warnorphansol{\qpd@id}}%
+      }%
+    \fi
+  }%
+}
+
+% ===================================================================
+% TOC
+% ===================================================================
+
+% .aux re-hydration: set one meta field AND record the ID into TOC order.
+% Called once per (ID, field) line during .aux read-back.
+\newcommand{\qpd@metaset}[3]{%
+  \qpd@setmeta{#1}{#2}{#3}%
+  \ifcsname qpd@tocorder@seen@#1\endcsname\else
+    \ifx\qpd@tocorder\@empty
+      \xdef\qpd@tocorder{#1}%
+    \else
+      \xdef\qpd@tocorder{\qpd@tocorder,#1}%
+    \fi
+    \expandafter\gdef\csname qpd@tocorder@seen@#1\endcsname{1}%
+  \fi
+}
+
+\def\qpd@tocorder{}
+
+% Walk \qpd@tocorder to build month data and setter list.
+% Called from \AtBeginDocument AFTER .aux has been read.
+\newcommand{\qpd@rebuildmonthdata}{%
+  \@for\qpd@tid:=\qpd@tocorder\do{%
+    \expandafter\qpd@addproblem@month\expandafter{\qpd@tid}%
+  }%
+}
+
+% Unique setter collection (populated by \meta as setters are declared).
+% Persisted to .qps file for next-pass foreword page.
+\def\qpd@uniquesetters{}
+
+\newcommand{\qpd@writesetters}{%
+  \ifx\qpd@uniquesetters\@empty\else
+    \immediate\openout\qpd@setterfile=\jobname.qps\relax
+    \immediate\write\qpd@setterfile{\string\def\string\qpd@uniquesetters{\qpd@uniquesetters}}%
+    \immediate\closeout\qpd@setterfile
+  \fi
+}
+
+\newcommand{\qpd@readsetters}{%
+  \IfFileExists{\jobname.qps}{\makeatletter\input{\jobname.qps}\makeatother}{}%
+}
+\newcommand{\qpd@recordsetter@toc}[1]{%
+  \@for\qpd@s:={#1}\do{%
+    % Trim leading/trailing spaces so "Sophie Chen" and " Sophie Chen"
+    % (from a comma-split list) deduplicate to the same entry.
+    \trim@spaces@in{\qpd@s}%
+    \ifdefempty{\qpd@s}{}{%
+      \ifcsname qpd@setterseen@\qpd@s\endcsname\else
+        \ifx\qpd@uniquesetters\@empty
+          \xdef\qpd@uniquesetters{\qpd@s}%
+        \else
+          \xdef\qpd@uniquesetters{\qpd@uniquesetters,\qpd@s}%
+        \fi
+        \expandafter\gdef\csname qpd@setterseen@\qpd@s\endcsname{1}%
+      \fi
+    }%
+  }%
+}
+
+% YYYYMMDD → "Www" (abbreviated weekday, e.g. "Tue").
+\newcommand{\qpd@tocweekday}[1]{%
+  \expandafter\qpd@tocweekday@i#1\@nil
+}
+\def\qpd@tocweekday@i#1#2#3#4#5#6#7#8\@nil{%
+  \pgfcalendardatetojulian{#1#2#3#4-#5#6-#7#8}{\qpd@tocjulian}%
+  \pgfcalendarjuliantoweekday{\qpd@tocjulian}{\qpd@tocwkday}%
+  \qpd@weekdayname{\qpd@tocwkday}%
+}
+
+% YYYYMMDD → "DD" (zero-padded day, e.g. "11").
+\newcommand{\qpd@tocdayofmonth}[1]{%
+  \expandafter\qpd@tocdayofmonth@a#1\@nil
+}
+\def\qpd@tocdayofmonth@a#1#2#3#4#5#6#7#8\@nil{%
+  \qpd@formatday{#7}{#8}%
+}
+
+% TOC header line for month front pages: "Q" over the problem page,
+% "A" over the answer page (no title marker).
+\newcommand{\qpd@tocheader}{%
+  \par\noindent
+  \hfill
+  \makebox[2.8em][r]{\textbf{Q}}%
+  \makebox[2.8em][r]{\textbf{A}}%
+  \par
+}
+
+% Single TOC item:
+%   "Www  DD  Title  · · · · · · · · · · · ·  P  A"
+% P and A each in their own box so columns align across rows.
+\newcommand{\qpd@printtocitem}[1]{%
+  \par\noindent
+  \makebox[4em][l]{\textbf{\qpd@tocweekday{#1}}}%
+  \makebox[2.3em][l]{\textbf{\qpd@tocdayofmonth{#1}}}%
+  \qpd@statusprefix{#1}\qpd@getname{#1}%
+  \unskip\nobreak\leaders\hbox{$\m@th\mkern 1.5mu\cdot\mkern 1.5mu$}\hfill
+  \makebox[2.8em][r]{\pageref{prob:#1}}%
+  \makebox[2.8em][r]{\pageref{sol:#1}}%
+  \par
+}
+
+% Month-row header:  "Q | A" (right-aligned, no title marker).
+\newcommand{\qpd@monthtocheader}{%
+  \par\noindent
+  \hfill
+  \makebox[2.8em][r]{\textbf{Q}}%
+  \makebox[2.8em][r]{\textbf{A}}%
+  \par
+}
+
+% Month-row item:  "YYYY Mmm  · · · · · · · ·  PQ  PA".
+% Month name links to the problem front page; Q→problem front, A→answer front.
+\newcommand{\qpd@printmonthrow}[1]{%
+  \par\noindent
+  \makebox[9em][l]{%
+    \hyperref[monthfront:#1]{\textbf{\qpd@prettymonthshort{#1}}}%
+  }%
+  \unskip\nobreak\leaders\hbox{$\m@th\mkern 1.5mu\cdot\mkern 1.5mu$}\hfill
+  \makebox[2.8em][r]{\hyperref[monthfront:#1]{\pageref{monthfront:#1}}}%
+  \makebox[2.8em][r]{\hyperref[monthanswers:#1]{\pageref{monthanswers:#1}}}%
+  \par
+}
+
+% --- Global TOC: prose + list of months ---
+\newcommand{\qpd@printglobaltoc}{%
+  \qpd@rebuildmonthdata
+  \qpd@bigheading{Problems}%
+  \ifdefined\qpd@problemsintro
+    \qpd@problemsintro
+    \bigskip
+  \fi
+  \ifx\qpd@monthorder\@empty
+    \par\noindent\emph{(Run \LaTeX a second time to populate this page.)}%
+  \else
+    \qpd@monthtocheader
+    \@for\qpd@m:=\qpd@monthorder\do{%
+      \qpd@printmonthrow{\qpd@m}%
+    }%
+  \fi
+  \newpage
+}
+
+% --- Month front page ---
+\newcommand{\qpd@printmonthfront}[1]{%
+  \phantomsection\label{monthfront:#1}%
+  \qpd@bigheading{\qpd@prettymonthname{#1}}%
+  % Mini-TOC of this month's problems (only on pass 2+)
+  \expandafter\ifx\csname qpd@monthprobs@#1\endcsname\relax\else
+    \par\medskip
+    \begingroup
+    \leftskip=1em\relax
+    \qpd@tocheader
+    \expandafter\@for\expandafter\qpd@tid\expandafter:%
+      \expandafter=\csname qpd@monthprobs@#1\endcsname\do{%
+      \qpd@printtocitem{\qpd@tid}%
+    }%
+    \endgroup
+  \fi
+  \newpage
+}
+
+% ===================================================================
+% HEADING HELPERS (chapter in booklet, section in single)
+% ===================================================================
+
+\newcommand{\qpd@bigheading}[1]{%
+  \ifdefined\QPDbooklet
+    \chapter*{#1}%
+  \else
+    \section*{#1}%
+  \fi
+}
+
+% ===================================================================
+% PROBLEM COUNTER
+% ===================================================================
+
+\newcounter{qpd@problemcount}
+
+\newcommand{\setproblemcounter}[1]{%
+  \setcounter{qpd@problemcount}{#1}\addtocounter{qpd@problemcount}{-1}%
+}
+
+% ===================================================================
+% ENVIRONMENT: problem
+% ===================================================================
+% Usage: \begin{problem}{ID}{Name}[Setter][Score]
+
+% Shared header: big character (Q/A) on the left, header text to its right,
+% the big char vertically centred against the two-line header.
+% #1=big char, #2=problem ID.  Setter/name/score/status are looked up
+% from the ID; a field renders only if it was declared and is non-empty.
+\newcommand{\qpd@bighdr}[2]{%
+  \noindent
+  \begin{minipage}[c]{3em}\centering
+    \fontsize{32}{38}\selectfont\bfseries #1
+  \end{minipage}%
+  \hspace{0.5em}%
+  \begin{minipage}[c]{\dimexpr\linewidth-3em-0.5em\relax}%
+    {\bfseries \qpd@prettydate{#2}}%
+    \ifcsname qpd@meta@setter@#2\endcsname
+      \expandafter\ifx\csname qpd@meta@setter@#2\endcsname\@empty\else
+        \hfill{\scshape \qpd@getsetter{#2}}%
+      \fi
+    \fi
+    \par
+    \smallskip
+    {\Large\bfseries \qpd@statusprefix{#2}\qpd@getname{#2}}%
+    \ifcsname qpd@meta@score@#2\endcsname
+      \expandafter\ifx\csname qpd@meta@score@#2\endcsname\@empty\else
+        \hfill\textbf{[\qpd@getscore{#2}~pts]}%
+      \fi
+    \fi
+    \par
+  \end{minipage}%
+}
+
+% Peel leading \meta{k}{v} declarations from the body, executing each,
+% and store the remaining content in \qpd@problemcontent.
+% \@ifnextchar skips whitespace between consecutive \meta lines, so the
+% whole leading block is consumed regardless of indentation.
+\newcommand{\qpd@peelmeta}{%
+  \@ifnextchar\meta{\qpd@peelmeta@b}{\qpd@peelmeta@end}%
+}
+\def\qpd@peelmeta@b\meta#1#2{%
+  \meta{#1}{#2}%
+  \qpd@peelmeta
+}
+\long\def\qpd@peelmeta@end#1\qpd@endmeta{%
+  \def\qpd@problemcontent{#1}%
+}
+
+\NewDocumentEnvironment{problem}{m +b}{%
+  \stepcounter{qpd@problemcount}%
+  \qpd@checkproblemdup{#1}%
+  \qpd@recordproblem{#1}%
+  \def\qpd@currentid{#1}%
+  \def\qpd@problembody{#2}%
+  %
+  % Booklet: register month + emit month front on month change (ID-driven).
+  \ifdefined\QPDbooklet
+    \qpd@addproblem@month{#1}%
+    \edef\qpd@newmonth{\qpd@extractmonth{#1}}%
+    \ifx\qpd@newmonth\qpd@currentmonth\else
+      \qpd@printmonthfront{\qpd@newmonth}%
+      \xdef\qpd@currentmonth{\qpd@newmonth}%
+    \fi
+  \fi
+}{%
+  % Execute leading \meta declarations first (always needed: the solution
+  % header and answer rendering read the meta).
+  \expandafter\qpd@peelmeta\qpd@problembody\qpd@endmeta
+  \ifbool{qpd@answersonly}{%
+    % Answer-only mode: emit nothing for the statement.  The solution is
+    % rendered by \printanswers at end of document.
+  }{%
+    \medskip
+    \hrule
+    \vspace{0.8em}
+    \qpd@bighdr{Q}{\qpd@currentid}%
+    \vspace{0.8em}
+    \hrule
+    \bigskip
+    %
+    \qpd@renderresources{\qpd@currentid}%
+    \ifbool{qpd@draft}{\marginpar{\raggedleft\tiny\texttt{\qpd@currentid}}}{}%
+    \def\@currentlabelname{\qpd@currentid: \qpd@getname{\qpd@currentid}}%
+    \phantomsection\label{prob:\qpd@currentid}%
+    \qpd@problemcontent
+    \par\bigskip
+    \ifdefined\QPDbooklet\newpage\fi
+  }%
+}
+
+% ===================================================================
+% ENVIRONMENT: solution (swallowed, stored)
+% ===================================================================
+
+\NewDocumentEnvironment{solution}{m +b}{%
+  \qpd@checksolutiondup{#1}%
+  \qpd@storesolution{#1}{#2}%
+  \qpd@recordsolution{#1}%
+  \ignorespacesafterend
+}{}
+
+% ===================================================================
+% ENVIRONMENT: assumptions (boxed enumerate)
+% ===================================================================
+
+\NewEnviron{assumptions}{%
+  \begin{center}%
+    \setlength{\fboxsep}{10pt}%
+    \noindent\fbox{%
+      \begin{minipage}{0.88\linewidth}%
+        \textbf{Assumptions}
+        \begin{enumerate}[label=\arabic*.,leftmargin=*]
+        \BODY
+        \end{enumerate}
+      \end{minipage}%
+    }%
+  \end{center}%
+}
+
+% ===================================================================
+% ENVIRONMENT: assumption (singular, inline)
+% ===================================================================
+
+\newenvironment{assumption}{%
+ \par\medskip\noindent\textbf{Assumption.}\space\ignorespaces
+}{%
+  \par\medskip
+}
+
+% ===================================================================
+% ENVIRONMENT: questions (alpha-enumerated)
+% ===================================================================
+
+\NewEnviron{questions}{%
+  \par\medskip
+  \textbf{Questions.}
+  \begin{enumerate}[label=\textbf{Q\arabic*.},leftmargin=*]
+  \BODY
+  \end{enumerate}
+  \par\medskip
+}
+
+% ===================================================================
+% ENVIRONMENT: answer (rule-framed, inside solution)
+% ===================================================================
+
+\NewEnviron{answer}{%
+  \par\bigskip
+  \hrule
+  \vspace{0.4em}
+  \noindent\textbf{Answer.}\space\BODY
+  \par\vspace{0.4em}
+  \hrule
+  \bigskip
+}
+
+% ===================================================================
+% ENVIRONMENT: example
+% ===================================================================
+
+\newenvironment{example}{%
+  \par\medskip
+  \noindent\textbf{Example.}\space\ignorespaces
+}{%
+  \par\medskip
+}
+
+% ===================================================================
+% RESOURCES (rendered by the problem environment)
+% ===================================================================
+% Resources are a `resources` meta field (comma-separated list).  The box is
+% drawn by the problem environment, not by the author — this keeps the
+% resource list available as structured data for the web export (e.g. CAS
+% integration) while still appearing on the printed page.
+
+\newcommand{\qpd@renderresources}[1]{%
+  \ifcsname qpd@meta@resources@#1\endcsname
+    \expandafter\ifx\csname qpd@meta@resources@#1\endcsname\@empty\else
+      \par\medskip
+      \noindent\fbox{%
+        \textbf{Resources:}\space \qpd@getmeta{#1}{resources}%
+      }%
+      \par\medskip
+    \fi
+  \fi
+}
+
+% ===================================================================
+% \printanswers — month-grouped
+% ===================================================================
+
+% Full answer header (big A + date/name/setter/score), used in the booklet
+% and in standalone answer-only mode.
+\newcommand{\qpd@answerheader}[1]{%
+  \phantomsection\label{sol:#1}%
+  \bigskip
+  \hrule
+  \vspace{0.4em}
+  \qpd@bighdr{A}{#1}%
+  \vspace{0.4em}
+  \hrule
+  \bigskip
+}
+
+% Render a single answer.
+% - booklet or answer-only: full header.
+% - plain standalone (statement + answer): no header, just the body.
+\newcommand{\qpd@printoneanswer}[1]{%
+  \ifcsname qpd@solution@#1\endcsname
+    \ifbool{qpd@answersonly}{%
+      \qpd@answerheader{#1}%
+    }{%
+      \ifdefined\QPDbooklet\qpd@answerheader{#1}\fi
+    }%
+    \qpd@getsolution{#1}%
+  \fi
+}
+
+% Single answer-TOC item (same format as problem TOC).
+\newcommand{\qpd@printanswerstocitem}[1]{%
+  \par\noindent
+  \makebox[4em][l]{\textbf{\qpd@tocweekday{#1}}}%
+  \makebox[2.3em][l]{\textbf{\qpd@tocdayofmonth{#1}}}%
+  \qpd@statusprefix{#1}\qpd@getname{#1}%
+  \unskip\nobreak\leaders\hbox{$\m@th\mkern 1.5mu\cdot\mkern 1.5mu$}\hfill
+  \makebox[2.8em][r]{\pageref{prob:#1}}%
+  \makebox[2.8em][r]{\pageref{sol:#1}}%
+  \par
+}
+
+% Answers TOC page — prose + list of months.
+\newcommand{\qpd@printanswerstoc}{%
+  \qpd@bigheading{Answers}%
+  \ifdefined\qpd@answersintro
+    \qpd@answersintro
+    \bigskip
+  \fi
+  \ifx\qpd@monthorder\@empty
+    \par\noindent\emph{(Run \LaTeX a second time to populate this page.)}%
+  \else
+    \qpd@monthtocheader
+    \@for\qpd@m:=\qpd@monthorder\do{%
+      \qpd@printmonthrow{\qpd@m}%
+    }%
+  \fi
+  \newpage
+}
+
+% Print all answers for one month.
+\newcommand{\qpd@printmonthanswers}[1]{%
+  % Month front page (mirrors \qpd@printmonthfront).
+  \phantomsection\label{monthanswers:#1}%
+  \qpd@bigheading{\qpd@prettymonthname{#1}}%
+  \expandafter\ifx\csname qpd@monthprobs@#1\endcsname\relax
+    \par\noindent\emph{(No answers available for this month yet.)}%
+  \else
+    % Mini-TOC for this month's answers
+    \par\medskip
+    \begingroup
+    \leftskip=1em\relax
+    \qpd@tocheader
+    \expandafter\@for\expandafter\qpd@tid\expandafter:%
+      \expandafter=\csname qpd@monthprobs@#1\endcsname\do{%
+      \qpd@printanswerstocitem{\qpd@tid}%
+    }%
+    \endgroup
+    \newpage
+    % Answers, one per page.
+    \expandafter\@for\expandafter\qpd@tid\expandafter:%
+      \expandafter=\csname qpd@monthprobs@#1\endcsname\do{%
+      \qpd@printoneanswer{\qpd@tid}%
+      \ifdefined\QPDbooklet\newpage\fi
+    }%
+  \fi
+}
+
+% Top-level entry point.
+\newcommand{\printanswers}{%
+  \ifx\qpd@problemorder\@empty
+    \PackageWarning{qpd-common}{No problems found --- answer section empty}%
+  \else
+    \ifx\qpd@monthorder\@empty
+      % Flat fallback: standalone mode (no month data).
+      \ifbool{qpd@answersonly}{%
+        % Answer-only: the per-answer header carries the identity, so no
+        % separate "Answers" divider is needed.
+      }{%
+        \newpage
+        \bigskip
+        \hrule
+        \vspace{0.4em}
+        \noindent{\Large\bfseries Answers}%
+        \par\vspace{0.4em}
+        \hrule
+        \bigskip
+      }%
+      \@for\qpd@id:=\qpd@problemorder\do{%
+        \qpd@printoneanswer{\qpd@id}%
+      }%
+    \else
+      \qpd@printanswerstoc
+      \@for\qpd@m:=\qpd@monthorder\do{%
+        \qpd@printmonthanswers{\qpd@m}%
+      }%
+    \fi
+  \fi
+}
+
+\endinput
