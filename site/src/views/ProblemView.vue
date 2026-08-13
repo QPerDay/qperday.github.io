@@ -25,27 +25,40 @@ const pdfUrl = (which: 'statement' | 'answer') =>
 
 <template>
   <article v-if="problem">
-    <header class="head">
-      <h1>
-        <template v-if="problem.status === 'err'">[ERR]</template> {{ problem.name }}
-      </h1>
-      <p class="setters">
-        by
-        <RouterLink v-for="s in problem.setter" :key="s" :to="`/setters/${slugify(s)}`">
-          {{ s }}
-        </RouterLink>
-      </p>
-    </header>
+    <div class="head-row">
+      <header class="head">
+        <h1>
+          <template v-if="problem.status === 'err'">[ERR]</template> {{ problem.name }}
+        </h1>
+        <p class="setters">
+          by
+          <RouterLink v-for="s in problem.setter" :key="s" :to="`/setters/${slugify(s)}`">
+            {{ s }}
+          </RouterLink>
+        </p>
+      </header>
 
-    <div class="toolbar">
-      <button class="action" type="button" @click="open('statement')">
-        <span class="action-label">Problem statement</span>
-        <span class="action-hint">PDF</span>
-      </button>
-      <button v-if="!problem.open" class="action" type="button" @click="open('answer')">
-        <span class="action-label">Answer</span>
-        <span class="action-hint">PDF</span>
-      </button>
+      <div class="toolbar">
+        <button
+          class="action"
+          type="button"
+          data-tip="Click to open the problem statement"
+          @click="open('statement')"
+        >
+          <span class="action-char">Q</span>
+          <span class="action-hint">PDF</span>
+        </button>
+        <button
+          v-if="!problem.open"
+          class="action"
+          type="button"
+          data-tip="Click to open the answer"
+          @click="open('answer')"
+        >
+          <span class="action-char">A</span>
+          <span class="action-hint">PDF</span>
+        </button>
+      </div>
     </div>
 
     <dl class="meta-table">
@@ -126,6 +139,15 @@ const pdfUrl = (which: 'statement' | 'answer') =>
 </template>
 
 <style scoped>
+.head-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s4);
+}
+.head {
+  min-width: 0;
+}
 .head h1 {
   margin-bottom: var(--s1);
 }
@@ -164,30 +186,61 @@ const pdfUrl = (which: 'statement' | 'answer') =>
 .toolbar {
   display: flex;
   gap: var(--s2);
-  margin: var(--s4) 0;
+  flex-shrink: 0;
 }
 .toolbar .action {
+  position: relative;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 0.1rem;
-  padding: var(--s3) var(--s4);
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  width: 5.5rem;
+  height: 5.5rem;
+  padding: var(--s3);
   cursor: pointer;
   border: 1px solid var(--c-accent);
   background: var(--c-accent-bg);
   border-radius: var(--radius);
-  text-align: left;
+  text-align: center;
 }
 .toolbar .action:hover {
   background: #e3edf5;
 }
-.action-label {
-  font-weight: 600;
+.action-char {
+  font-size: 2rem;
+  line-height: 1;
+  font-weight: 700;
   color: var(--c-accent-strong);
 }
 .action-hint {
-  font-size: 0.78rem;
+  font-size: 0.7rem;
   color: var(--c-muted);
+}
+
+/* Custom tooltip — appears immediately on hover/focus (native `title` has a
+   ~1s delay and is suppressed on some setups).  Driven by data-tip. */
+.action::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 0.5rem);
+  left: 50%;
+  transform: translateX(-50%) translateY(0.25rem);
+  white-space: nowrap;
+  background: var(--c-fg);
+  color: #fff;
+  font-size: 0.8rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: var(--radius);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s ease, transform 0.12s ease;
+  z-index: 10;
+}
+.action:hover::after,
+.action:focus-visible::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 .overlay {

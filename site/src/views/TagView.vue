@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useCatalog } from '@/stores/catalog'
+import { formatDate } from '@/lib/date'
 
 const props = defineProps<{ nameNormalized: string }>()
 
@@ -18,7 +19,7 @@ const problems = computed(() => (name.value ? catalog.problemsForTag(name.value)
     <ul class="list">
       <li v-for="p in problems" :key="p.id">
         <RouterLink :to="`/problem/${p.id}`" class="card row">
-          <span class="id">{{ p.id }}</span>
+          <span class="id">{{ formatDate(p.id) }}</span>
           <span class="name">
             <template v-if="p.status === 'err'">[ERR]</template> {{ p.name }}
           </span>
@@ -35,7 +36,7 @@ const problems = computed(() => (name.value ? catalog.problemsForTag(name.value)
 }
 .row {
   display: grid;
-  grid-template-columns: 7rem 1fr;
+  grid-template-columns: 8rem 1fr;
   gap: var(--s4);
 }
 </style>

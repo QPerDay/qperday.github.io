@@ -1,0 +1,20 @@
+{
+  "id": "20260802",
+  "date": "2026-08-02",
+  "name": "Electromagnetic in Disk",
+  "setter": [
+    "Postulate V"
+  ],
+  "score": "5",
+  "status": "",
+  "topic": "electromagnetism",
+  "difficulty": 3,
+  "tags": [
+    "electromagnetism",
+    "magnetic field",
+    "circular motion",
+    "Lorentz force"
+  ],
+  "open": false,
+  "resources": []
+}

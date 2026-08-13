@@ -23,4 +23,7 @@ export interface ProblemQuery {
   status?: '' | 'ok' | 'err'
   topic?: string
   tag?: string
+  // Inclusive date bounds, ISO `YYYY-MM-DD` (matching `ProblemMeta.date`).
+  dateFrom?: string
+  dateTo?: string
 }

@@ -1,50 +1,99 @@
 \input qpd-bootstrap
 
 \begin{problem}{20260731}
-  \meta{name}{The Trolley Problem}
-  \meta{setter}{Andy He}
-  \meta{score}{6}
+  \meta{name}{Swing Dynamics}
+  \meta{setter}{Jason Zhang}
+  \meta{score}{10}
   \meta{topic}{mechanics}
-  \meta{difficulty}{2}
-  \meta{tags}{mechanics, rotation, rolling, energy}
+  \meta{difficulty}{5}
+  \meta{tags}{mechanics, pendulum, circular motion, energy, centripetal force}
 
-Today, SM-senior 黄瑞宣 was kidnapped by the evil Professor 孙笑川. The wicked Emperor has decided to make our great SM-senior 黄瑞宣 solve a problem that has long troubled humanity --- and, in doing so, to steal 李文亚's Nobel Prize. After weighing many awards, Professor 孙笑川 concluded that only the Nobel Prize in Physics could suppress 李文亚's white-body biology theory, so he resolved to have 黄瑞宣 solve a physics problem that has baffled all of humankind: the Trolley Problem. 黄瑞宣 had to choose between securing a pentakill for the ace elite and completing an online solo kill. Under Professor 孙笑川's coercion, and with the weight of past memories flooding back, 黄瑞宣 transformed on the spot into the Identity V character 破轮 (whose appearance is shown below).
+A physics study group builds a small model of a swing.  A point mass $M$ hangs from a fixed pivot on a light string of length $L$.  Let $\theta$ be the angle the swing makes with the downward vertical.
 
-\begin{center}
-  \includegraphics[width=0.45\linewidth]{assets/20260731-1.png}
-\end{center}
+At $t = 0$ the swing is at $\theta = 0$, but the mass has a velocity of magnitude $v_0$ directed normal to the string.  At some later time $t'$, the tension in the string returns to zero.
 
-…and crushed Professor 孙笑川 to death, bringing his sinful life to an end.
-
-Treat Professor 孙笑川 as a hemisphere of radius $r$ lying on a plane. 黄瑞宣, having become 破轮, has radius $R$, mass $M$, and moment of inertia $I = \tfrac12 M R^{2}$, and has speed $v$ at the instant he crushes into Professor 孙笑川.
+\begin{assumptions}
+  \item The string is massless and inextensible, of length $L$.
+  \item The pivot is fixed; the only force besides tension is gravity $g$.
+  \item The mass is a point particle; air resistance is negligible.
+\end{assumptions}
 
 \begin{questions}
-  \item Find the kinetic energy lost in rolling over Professor 孙笑川.
-  \item Find the minimum initial speed $v$ for 黄瑞宣 to just barely roll over Professor 孙笑川.
+  \item \textbf{Over the horizontal.}
+        Derive the minimum $v_0$ such that at $t = t'$, $\theta > \pi/2$ (the swing has passed the horizontal).
+
+  \item \textbf{Over the top.}
+        Derive the minimum $v_0$ such that at $t = t'$, $\theta > \pi$ (the swing has passed the vertical).
+
+  \item \textbf{The point of no return.}
+        Find the minimum angle $\theta^{*}$ with the following property: if the swing reaches $\theta = \theta^{*}$ with the string still taut, then the tension is positive at every angle beyond $\theta^{*}$.  (In other words, $\theta^{*}$ is the point of no return — once passed with the string taut, the swing is guaranteed to remain taut for the rest of the revolution.)
 \end{questions}
 
 \end{problem}
 
 \begin{solution}{20260731}
 
-破轮 is a uniform disk, so its moment of inertia is $I = \tfrac12 M R^{2}$. When rolling without slipping on the ground, the total kinetic energy is the sum of translational and rotational parts:
+Let $\theta$ be measured from the downward vertical.  The radial (outward) equation of motion is
 \[
-E_k = \tfrac12 M v^{2} + \tfrac12 I \omega^{2}
-    = \tfrac12 M v^{2} + \tfrac12 \cdot \tfrac12 M R^{2}\!\left(\frac{v}{R}\right)^{2}
-    = \tfrac34 M v^{2}.
+  T - Mg\cos\theta = -\frac{Mv^{2}}{L}
+  \qquad\Longrightarrow\qquad
+  T = M\frac{v^{2}}{L} + Mg\cos\theta,
+\]
+where $T \ge 0$ as long as the string is taut.  Conservation of energy gives
+\[
+  \tfrac12 M v^{2} + MgL(1-\cos\theta) = \tfrac12 M v_{0}^{2}
+  \qquad\Longrightarrow\qquad
+  v^{2} = v_{0}^{2} - 2gL(1-\cos\theta).
 \]
 
-\textbf{Q1. Kinetic energy lost.} As 破轮 rolls from the ground (centre of mass at height $R$) up to the top of the hemisphere, its centre of mass rises to $R+r$, an increase of $\Delta h = r$. For ideal rolling without slipping there is no dissipation, so the kinetic energy lost is entirely converted into gravitational potential energy:
+\subsection*{Q1. Over the horizontal}
+
+The string goes slack when $T = 0$:
 \[
-\boxed{\Delta E_k = M g r}.
+  \frac{v^{2}}{L} + g\cos\theta = 0
+  \qquad\Longrightarrow\qquad
+  v^{2} = -gL\cos\theta .
+\]
+Combining with energy,
+\[
+  -gL\cos\theta = v_{0}^{2} - 2gL(1-\cos\theta)
+  \;\Longrightarrow\;
+  v_{0}^{2} = gL(2 - 3\cos\theta).
+\]
+The slack angle $\theta'$ therefore satisfies $\cos\theta' = (2 - v_{0}^{2}/gL)/3$.  The condition $\theta' > \pi/2$ means $\cos\theta' < 0$, i.e.\ $v_{0}^{2} > 2gL$.  Hence
+\[
+  \boxed{v_{0,\min} = \sqrt{2gL}}.
 \]
 
-\textbf{Q2. Minimum initial speed.} To \emph{just barely} roll over Professor 孙笑川, 破轮 arrives at the top of the hemisphere with zero kinetic energy. By conservation of mechanical energy,
+\subsection*{Q2. Over the top}
+
+The condition $\theta' > \pi$ means $\cos\theta' < -1$ requires $v_{0}^{2} > 5gL$, so the boundary is $\theta' = \pi$, i.e.\ $\cos\theta' = -1$.  Then
 \[
-\tfrac34 M v_{\min}^{2} = M g r
-\;\Longrightarrow\;
-\boxed{v_{\min} = \sqrt{\tfrac{4}{3} g r}}.
+  v_{0}^{2} = gL(2 + 3) = 5gL
+  \;\Longrightarrow\;
+  \boxed{v_{0,\min} = \sqrt{5gL}}.
 \]
+At this speed the string goes slack exactly at the top, $\theta' = \pi$.
+
+\subsection*{Q3. The point of no return}
+
+Substituting the energy relation $v^{2} = v_{0}^{2} - 2gL(1-\cos\theta)$ into the tension gives
+\[
+  T(\theta) = M\frac{v^{2}}{L} + Mg\cos\theta
+            = \frac{M}{L}\,v_{0}^{2} + Mg\bigl(3\cos\theta - 2\bigr).
+\]
+Since $\cos\theta$ is minimised at $\theta = \pi$, the tension is minimised at the top:
+\[
+  T_{\min} = T(\pi) = \frac{M}{L}\bigl(v_{0}^{2} - 5gL\bigr).
+\]
+
+Therefore, if the string is still taut at $\theta = \pi$ (so $T(\pi) > 0$), then $T(\theta) \ge T(\pi) > 0$ for every $\theta$, and in particular for every $\theta > \pi$.  So $\theta^{*} = \pi$ has the required property.
+
+It is also the \emph{minimum}: for any $\theta^{*} < \pi$, choose a trajectory whose slack angle satisfies $\theta^{*} < \theta' < \pi$ (such trajectories exist, from Q1 with $\cos\theta' = (2 - v_{0}^{2}/gL)/3$).  Then $T(\theta^{*}) > 0$ yet $T(\theta') = 0$, so the property fails.  Hence no $\theta^{*} < \pi$ works, and
+\[
+  \boxed{\theta^{*} = \pi}.
+\]
+Equivalently: the string remains taut for the whole revolution precisely when $v_{0}^{2} \ge 5gL$, and the top is the last point at which it can first go slack.
 
 \end{solution}
 

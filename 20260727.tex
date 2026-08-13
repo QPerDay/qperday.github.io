@@ -1,0 +1,70 @@
+\input qpd-bootstrap
+
+\begin{problem}{20260727}
+  \meta{name}{The Magical Whip}
+  \meta{setter}{Andy He}
+  \meta{topic}{mechanics}
+  \meta{difficulty}{4}
+  \meta{tags}{mechanics, variable mass, momentum, Newton's laws}
+
+SM-senior 黄瑞轩 is testing a whip.  But this whip is brittle and magical: it has \emph{no structural integrity}, so each element $\mathrm{d}m$ of it is in free fall on its own.  He holds the whip vertically with its lower end just touching the ground, then lets go.
+
+The whip has mass $M$ and length $L$, with uniform linear density $\lambda = M/L$.  At a later instant a length $y$ of it lies on the ground (piled up at rest), while the remaining length $L - y$ is still falling, the whole falling part descending with speed $v$ as a column.
+
+\begin{assumptions}
+  \item The whip is uniform with linear density $\lambda = M/L$.
+  \item There is no internal tension: each element is in free fall, and on touching the ground it is instantly brought to rest (perfectly inelastic landing).
+  \item The pile on the ground is at rest and does not bounce.
+  \item Air resistance is negligible.
+\end{assumptions}
+
+\begin{questions}
+  \item \textbf{The ground's normal force.}
+        Solve for the normal force $F_N$ applied by the ground on the whip as a function of $y$.
+\end{questions}
+
+\end{problem}
+
+\begin{solution}{20260727}
+
+This is a \emph{variable-mass} system: the moving part of the whip shrinks as it piles up, so Newton's law in the form $\sum F = m a$ does not directly apply.  Instead we use the momentum form
+\[
+  \dot{P} = F_{\text{ext}},
+\]
+where $P$ is the total vertical momentum of the whip (the pile contributes none, being at rest) and $F_{\text{ext}}$ is the total external force on the whip.
+
+The falling column has length $L-y$ and, because every element is in free fall together, a common downward speed $v = \dot{y}$.  Its momentum (downward) is
+\[
+  P = \lambda\,(L-y)\,v .
+\]
+Differentiating, with $\dot v = g$ (free fall) and $\dot y = v$,
+\[
+  \dot{P} = \lambda\,(L-y)\,\dot{v} - \lambda\,\dot{y}\,v
+          = \lambda\,(L-y)\,g - \lambda\,v^{2}.
+\]
+
+The external forces on the whole whip are its weight $\lambda L g$ (downward) and the ground's normal force $F_N$ (upward).  Taking downward as positive,
+\[
+  F_{\text{ext}} = \lambda L g - F_N .
+\]
+Thus $\dot P = F_{\text{ext}}$ gives
+\[
+  \lambda L g - F_N = \lambda\,(L-y)\,g - \lambda\,v^{2}
+  \;\Longrightarrow\;
+  F_N = \lambda\,g y + \lambda\,v^{2}.
+\]
+
+Finally, the falling column has descended a distance $y$, so by free-fall kinematics
+\[
+  v^{2} = 2gy .
+\]
+Substituting,
+\[
+  \boxed{F_N = 3\lambda g y = \frac{3Mgy}{L}} .
+\]
+
+\textbf{Interpretation.}  The term $\lambda g y = Mgy/L$ is the weight of the pile already on the ground; the extra $2\lambda g y$ is the momentum flux — the rate at which the falling whip's momentum is destroyed as each element is brought to rest.  This is why the ground feels \emph{three times} the weight of the already-landed portion.
+
+\end{solution}
+
+\input qpd-end

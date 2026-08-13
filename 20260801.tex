@@ -1,0 +1,135 @@
+\input qpd-bootstrap
+
+\begin{problem}{20260801}
+  \meta{name}{Ionic Bonding}
+  \meta{setter}{Ryan Huang}
+  \meta{score}{10}
+  \meta{topic}{electromagnetism}
+  \meta{difficulty}{4}
+  \meta{tags}{electromagnetism, electrostatics, ionic bonding, energy}
+  \meta{resources}{calculator}
+
+Max Qiu is curious about how ionic bonds form.  From information he found online, he knew that at the microscopic level, gravitational forces are generally not considered.  He finds the problem interesting and decides to share it with Sean.  Sean posits that a bond can only form stably when the total potential field of two particles sits at a local minimum.  After more research, they find that two forces act between the two particles:
+
+\begin{enumerate}
+  \item The Coulomb force
+    \[
+      F_E(r) = k\,\frac{q_1 q_2}{r^{2}},
+    \]
+    where $r$ is the separation of the two particles and $k$ is the Coulomb constant.
+  \item A short-range ``resistance'' force
+    \[
+      F_R(r) = \frac{nA}{r^{n+1}},
+    \]
+    which is repulsive and dominates at small $r$.
+\end{enumerate}
+
+Here $n > 1$ and $A > 0$ are constants.
+
+\begin{assumptions}
+  \item The two atoms are modeled as point particles of opposite charge, $\operatorname{sgn}(q_1) = -\operatorname{sgn}(q_2)$.
+  \item Only the Coulomb force and the short-range resistance force act; gravity and all other interactions are neglected.
+  \item The interaction is central --- each force depends only on the separation $r$ of the two particles.
+\end{assumptions}
+
+\begin{questions}
+  \item \textbf{Gravity versus Electricity.}
+        Consider two electrons, each of charge $-e$ and mass $m_e$.  Compute the ratio $\abs{F_G}/\abs{F_E}$ of the gravitational and electric forces between them, evaluate it numerically, and take its logarithm to explain why Max decided that gravitational forces are negligible.
+  \item \textbf{Potential Energy.}
+        Given $q_1$, $q_2$, $m_1$, $m_2$, and the two forces $F_E(r) = k\,q_1 q_2/r^{2}$ and $F_R(r) = nA/r^{n+1}$ (with $k$, $n$, $A$ known constants), compute the total potential energy $U(r)$.  Use $U(r \to \infty) = 0$ as the reference point.
+  \item \textbf{Stable Bond.}
+        When a bond forms stably, the equilibrium separation $r_0$ and binding energy $U_0 = U(r_0)$ satisfy $\tfrac{\dd U}{\dd r}\big|_{r_0} = 0$ and $\tfrac{\dd^{2} U}{\dd r^{2}}\big|_{r_0} > 0$.  Find $r_0$ and $U_0$ in terms of the given constants, and prove that the minimum is unique.
+\end{questions}
+
+\end{problem}
+
+\begin{solution}{20260801}
+
+\subsection*{Q1. Gravity versus Electricity}
+
+Two electrons have $q_1 = q_2 = -e$ and mass $m_e$; they attract gravitationally and repel electrically, with magnitudes
+\[
+  \abs{F_E} = k\,\frac{e^{2}}{r^{2}},
+  \qquad
+  \abs{F_G} = G\,\frac{m_e^{2}}{r^{2}}.
+\]
+Both forces fall off as $r^{-2}$, so their ratio is independent of the separation:
+\[
+  \frac{\abs{F_G}}{\abs{F_E}} = \frac{G\,m_e^{2}}{k\,e^{2}}.
+\]
+Substituting $G = 6.674\times10^{-11}\ \mathrm{N\,m^{2}\,kg^{-2}}$, $m_e = 9.109\times10^{-31}\ \mathrm{kg}$, $k = 8.988\times10^{9}\ \mathrm{N\,m^{2}\,C^{-2}}$, and $e = 1.602\times10^{-19}\ \mathrm{C}$ gives
+\[
+  \frac{\abs{F_G}}{\abs{F_E}} = 2.40\times10^{-43},
+  \qquad
+  \log_{10}\!\left(\frac{\abs{F_G}}{\abs{F_E}}\right) \approx -42.6.
+\]
+Gravity is about $43$ orders of magnitude weaker than the electric force at every separation, so it is utterly negligible at the atomic scale.  This is why Max drops it.
+
+\subsection*{Q2. Potential Energy}
+
+The potential energy is the negative integral of the force, $U(r) = -\int F(r)\,\dd r$.  For the Coulomb term,
+\[
+  U_E(r) = -\int k\,\frac{q_1 q_2}{r^{2}}\,\dd r
+          = k\,\frac{q_1 q_2}{r} + C_E,
+\]
+and for the resistance term,
+\[
+  U_R(r) = -\int \frac{nA}{r^{n+1}}\,\dd r
+          = \frac{A}{r^{n}} + C_R,
+\]
+where the second step uses $\frac{\dd}{\dd r}(r^{-n}) = -n\,r^{-n-1}$, so that $-\frac{\dd}{\dd r}\!\left(\frac{A}{r^n}\right) = \frac{nA}{r^{n+1}} = F_R$.  The reference $U(r \to \infty) = 0$ forces $C_E = C_R = 0$, giving
+\[
+  \boxed{\,U(r) = k\,\frac{q_1 q_2}{r} + \frac{A}{r^{n}}\,}.
+\]
+The masses $m_1$, $m_2$ do not appear: the interaction potential depends only on the charges and the separation, never on the masses.
+
+\subsection*{Q3. Stable Bond}
+
+A stable bond is a minimum of $U$, so $\frac{\dd U}{\dd r} = 0$.  Differentiating,
+\[
+  \frac{\dd U}{\dd r}
+  = -k\,\frac{q_1 q_2}{r^{2}} - \frac{nA}{r^{n+1}}
+  = k\,\frac{\abs{q_1 q_2}}{r^{2}} - \frac{nA}{r^{n+1}},
+\]
+where the last equality uses $q_1 q_2 = -\abs{q_1 q_2}$ (opposite charges).  Setting this to zero,
+\[
+  k\,\frac{\abs{q_1 q_2}}{r_0^{2}} = \frac{nA}{r_0^{n+1}}
+  \;\Longrightarrow\;
+  r_0^{\,n-1} = \frac{nA}{k\,\abs{q_1 q_2}},
+\]
+so the equilibrium separation is
+\[
+  \boxed{\,r_0 = \left(\frac{nA}{k\,\abs{q_1 q_2}}\right)^{\!1/(n-1)}\,}.
+\]
+The binding energy is then
+\[
+  U_0 = U(r_0) = -k\,\frac{\abs{q_1 q_2}}{r_0} + \frac{A}{r_0^{\,n}}.
+\]
+Eliminating $A$ with the equilibrium condition, $\frac{A}{r_0^n} = \frac{k\,\abs{q_1 q_2}}{n\,r_0}$, gives
+\[
+  \boxed{\,U_0 = -k\,\frac{\abs{q_1 q_2}}{r_0}\left(1-\frac{1}{n}\right)
+               = -\frac{n-1}{n}\,\frac{k\,\abs{q_1 q_2}}{r_0} < 0\,}.
+\]
+The negative sign is precisely what makes the bond stable.
+
+\emph{Uniqueness.}  The stationarity condition rearranges to
+\[
+  r^{\,n-1} = \frac{nA}{k\,\abs{q_1 q_2}}.
+\]
+Because $n > 1$, the map $r \mapsto r^{\,n-1}$ is strictly increasing on $(0,\infty)$, so this equation has \emph{at most one} positive solution; and since the right-hand side is positive while $r^{\,n-1}$ runs over all of $(0,\infty)$, it has \emph{exactly one}.  Hence $U$ has a unique critical point $r_0$.  To confirm it is a minimum,
+\[
+  \frac{\mathrm{d}^{2}U}{\mathrm{d}r^{2}}
+  = 2k\,\frac{q_1 q_2}{r^{3}} + \frac{n(n+1)A}{r^{n+2}}
+  = -\frac{2k\,\abs{q_1 q_2}}{r^{3}} + \frac{n(n+1)A}{r^{n+2}}.
+\]
+At $r_0$, using $nA = k\,\abs{q_1 q_2}\,r_0^{\,n-1}$,
+\[
+  \frac{\mathrm{d}^{2}U}{\mathrm{d}r^{2}}\bigg|_{r_0}
+  = -\frac{2k\,\abs{q_1 q_2}}{r_0^{3}} + \frac{(n+1)k\,\abs{q_1 q_2}}{r_0^{3}}
+  = \frac{(n-1)\,k\,\abs{q_1 q_2}}{r_0^{3}} > 0.
+\]
+Thus $r_0$ is a local minimum, and since it is the unique critical point it is in fact the unique global minimum.
+
+\end{solution}
+
+\input qpd-end

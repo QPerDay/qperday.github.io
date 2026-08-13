@@ -1,108 +1,49 @@
 \input qpd-bootstrap
 
 \begin{problem}{20260803}
-  \meta{name}{Three Coins Again}
-  \meta{setter}{Alice Liu}
-  \meta{score}{12}
+  \meta{name}{The Trolley Problem}
+  \meta{setter}{Andy He}
+  \meta{score}{6}
   \meta{topic}{mechanics}
-  \meta{difficulty}{4}
-  \meta{tags}{mechanics, collisions, oscillations, momentum}
+  \meta{difficulty}{2}
+  \meta{tags}{mechanics, rotation, rolling, energy}
 
-A light vertical spring is fixed to a horizontal table at its lower end; its upper end carries a rigid horizontal tray of mass $M = 100\,\mathrm{g}$ (the tray's mass is \emph{not} negligible).  The spring constant is $k = 80\,\mathrm{N/m}$, and at its natural length the tray's upper surface is $L_{0} = 0.25\,\mathrm{m}$ above the table.
+Today, SM-senior 黄瑞宣 was kidnapped by the evil Professor 孙笑川. The wicked Emperor has decided to make our great SM-senior 黄瑞宣 solve a problem that has long troubled humanity --- and, in doing so, to steal 李文亚's Nobel Prize. After weighing many awards, Professor 孙笑川 concluded that only the Nobel Prize in Physics could suppress 李文亚's white-body biology theory, so he resolved to have 黄瑞宣 solve a physics problem that has baffled all of humankind: the Trolley Problem. 黄瑞宣 had to choose between securing a pentakill for the ace elite and completing an online solo kill. Under Professor 孙笑川's coercion, and with the weight of past memories flooding back, 黄瑞宣 transformed on the spot into the Identity V character 破轮 (whose appearance is shown below).
 
-Three identical coins, each of mass $m = 20\,\mathrm{g}$, are dropped one at a time from directly above the tray, each released from rest at a height $h = 0.45\,\mathrm{m}$ above the tray's upper surface.
+\begin{center}
+  \includegraphics[width=0.45\linewidth]{assets/20260803-1.png}
+\end{center}
 
-The sequence is:
+…and crushed Professor 孙笑川 to death, bringing his sinful life to an end.
 
-1. Coin 1 is released and collides \emph{perfectly inelastically} with the tray (it sticks); the combined system then oscillates vertically.
-2. When the system first returns to the tray's initial position, coin 2 is released and collides perfectly inelastically.
-3. When the system first returns to the tray's initial position again, coin 3 is released and collides perfectly inelastically.
-
-Take $g = 10\,\mathrm{m/s^{2}}$, neglect air resistance, assume the spring never exceeds its elastic limit, treat each collision as instantaneous, and neglect the impulse of gravity during each collision.
-
-\begin{assumptions}
-  \item The spring is linear and remains within its elastic limit throughout.
-  \item The tray is rigid; the coins stick to it (and to each other) on impact.
-  \item Collisions are instantaneous; gravity's impulse during a collision is negligible.
-\end{assumptions}
+Treat Professor 孙笑川 as a hemisphere of radius $r$ lying on a plane. 黄瑞宣, having become 破轮, has radius $R$, mass $M$, and moment of inertia $I = \tfrac12 M R^{2}$, and has speed $v$ at the instant he crushes into Professor 孙笑川.
 
 \begin{questions}
-  \item \textbf{First coin.}
-        Just after coin 1 strikes the tray, find the combined system's velocity, and the amplitude of the subsequent oscillation.
-
-  \item \textbf{Second coin.}
-        Just before coin 2 strikes, find the magnitude of the system's velocity.
-
-  \item \textbf{Third coin.}
-        Just after coin 3 strikes, find the system's velocity.
-
-  \item \textbf{Separation?}
-        After coin 3 strikes, during the upward motion, does coin 3 ever separate from the body below it?  Justify your answer with a calculation.
+  \item Find the kinetic energy lost in rolling over Professor 孙笑川.
+  \item Find the minimum initial speed $v$ for 黄瑞宣 to just barely roll over Professor 孙笑川.
 \end{questions}
 
 \end{problem}
 
 \begin{solution}{20260803}
 
-\subsection*{Q1. First coin}
-
-The coin falls from rest through height $h$, so just before impact its speed is
+破轮 is a uniform disk, so its moment of inertia is $I = \tfrac12 M R^{2}$. When rolling without slipping on the ground, the total kinetic energy is the sum of translational and rotational parts:
 \[
-  v = \sqrt{2gh} = \sqrt{2\cdot 10\cdot 0.45} = 3\ \mathrm{m/s}.
-\]
-Perfectly inelastic collision (gravity's impulse neglected):
-\[
-  m v = (M+m) V_{1}
-  \;\Longrightarrow\;
-  V_{1} = \frac{m v}{M+m} = \frac{0.02\cdot 3}{0.12}
-        = \boxed{0.5\ \mathrm{m/s}\ \text{(downward)}}.
+E_k = \tfrac12 M v^{2} + \tfrac12 I \omega^{2}
+    = \tfrac12 M v^{2} + \tfrac12 \cdot \tfrac12 M R^{2}\!\left(\frac{v}{R}\right)^{2}
+    = \tfrac34 M v^{2}.
 \]
 
-The equilibrium compression changes.  With the tray alone it is $y_{\text{eq}1} = Mg/k = 1.25\,\mathrm{cm}$; with the coin it becomes $y_{\text{eq}2} = (M+m)g/k = 1.5\,\mathrm{cm}$.  At the moment of impact the tray sits at $y_{\text{eq}1}$, i.e. a displacement $\delta = y_{\text{eq}1}-y_{\text{eq}2} = -0.25\,\mathrm{cm}$ from the new equilibrium, moving at $V_{1}$ downward.  With angular frequency $\omega_{1} = \sqrt{k/(M+m)}$,
+\textbf{Q1. Kinetic energy lost.} As 破轮 rolls from the ground (centre of mass at height $R$) up to the top of the hemisphere, its centre of mass rises to $R+r$, an increase of $\Delta h = r$. For ideal rolling without slipping there is no dissipation, so the kinetic energy lost is entirely converted into gravitational potential energy:
 \[
-  A_{1} = \sqrt{\delta^{2} + \left(\frac{V_{1}}{\omega_{1}}\right)^{2}}
-        = \sqrt{(0.0025)^{2} + \left(\frac{0.5}{25.82}\right)^{2}}
-        = \boxed{1.95\ \mathrm{cm}}.
+\boxed{\Delta E_k = M g r}.
 \]
 
-\subsection*{Q2. Second coin}
-
-At the first return to the tray's initial position the system passes through the same displacement $\delta$, so by energy conservation its speed equals the speed it had just after the first collision:
+\textbf{Q2. Minimum initial speed.} To \emph{just barely} roll over Professor 孙笑川, 破轮 arrives at the top of the hemisphere with zero kinetic energy. By conservation of mechanical energy,
 \[
-  \boxed{v_{2} = 0.5\ \mathrm{m/s}}.
-\]
-
-\subsection*{Q3. Third coin}
-
-Coin 2 falls at $3\ \mathrm{m/s}$ downward, while the system is moving $0.5\ \mathrm{m/s}$ \emph{upward}.  Their momenta cancel:
-\[
-  m(3) + (M+m)(-0.5) = 0.02\cdot 3 - 0.12\cdot 0.5 = 0,
-\]
-so the system is momentarily at rest after the second collision.  It then oscillates about the new equilibrium $y_{\text{eq}3} = (M+2m)g/k = 1.75\,\mathrm{cm}$, starting at rest at $y_{\text{eq}1} = 1.25\,\mathrm{cm}$, which is a turning point ($\delta = -0.5\,\mathrm{cm}$).  At its first return to the initial position (one full oscillation later) the system is again at rest.
-
-Thus coin 3 strikes a stationary system at $3\ \mathrm{m/s}$:
-\[
-  m v = (M+3m) V_{3}
-  \;\Longrightarrow\;
-  V_{3} = \frac{0.02\cdot 3}{0.16} = \boxed{0.375\ \mathrm{m/s}\ \text{(downward)}}.
-\]
-
-\subsection*{Q4. Separation?}
-
-After the third collision the total mass is $M+3m = 0.16\,\mathrm{kg}$, with equilibrium compression $y_{\text{eq}4} = (M+3m)g/k = 2.0\,\mathrm{cm}$ and angular frequency $\omega_{3} = \sqrt{k/(M+3m)}$.  At impact the system is at $y_{\text{eq}1} = 1.25\,\mathrm{cm}$ moving at $V_{3}$, so the amplitude is
-\[
-  A_{3} = \sqrt{(1.25-2.0)^{2} + \left(\frac{V_{3}}{\omega_{3}}\right)^{2}}
-        = \sqrt{(0.0075)^{2} + \left(\frac{0.375}{22.36}\right)^{2}}
-        = 1.84\ \mathrm{cm}.
-\]
-
-The coin on top separates from the stack below only if the stack's downward acceleration exceeds $g$ (a free coin can accelerate downward no faster than $g$).  The maximum downward acceleration occurs at the top of the oscillation:
-\[
-  a_{\max} = \omega_{3}^{2} A_{3} = 9.19\ \mathrm{m/s^{2}} < g = 10\ \mathrm{m/s^{2}}.
-\]
-Since $a_{\max} < g$, the contact force never drops to zero, so
-\[
-  \boxed{\text{coin 3 does not separate.}}
+\tfrac34 M v_{\min}^{2} = M g r
+\;\Longrightarrow\;
+\boxed{v_{\min} = \sqrt{\tfrac{4}{3} g r}}.
 \]
 
 \end{solution}

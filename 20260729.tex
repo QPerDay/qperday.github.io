@@ -1,0 +1,117 @@
+\input qpd-bootstrap
+
+\begin{problem}{20260729}
+  \meta{name}{Stacked Coins on an Incline}
+  \meta{setter}{Alice Liu}
+  \meta{score}{15}
+  \meta{topic}{mechanics}
+  \meta{difficulty}{5}
+  \meta{tags}{mechanics, friction, Newton's laws, energy, inclined plane}
+
+Three identical coins, each of mass $m$ and radius $R$ (thickness neglected), are stacked vertically on a horizontal table, labelled $A$ (bottom), $B$, $C$ (top).  The kinetic friction coefficient and the maximum static friction coefficient are the same everywhere --- both between the table and a coin, and between any two coins: $\mu_k$ and $\mu_s$ respectively, with $\mu_s > \mu_k$.  The gravitational field is uniform with strength $g$.  The coins only translate; they never tip.
+
+The table's right edge joins smoothly to a rough inclined plane of angle $\theta$, made of the same material (friction coefficient $\mu_k$).
+
+\begin{assumptions}
+  \item All coins are identical point-like disks of mass $m$, radius $R$; thickness and tipping are ignored.
+  \item Friction coefficients are the same at every interface: kinetic $\mu_k$, static max $\mu_s$, with $\mu_s > \mu_k$.
+  \item A coin slides with kinetic friction $\mu_k N$; two coins stay stuck together whenever the required force is below the static limit $\mu_s N$.
+\end{assumptions}
+
+\begin{questions}
+  \item \textbf{Slow push.}
+        \begin{enumerate}[label=\arabic*.]
+          \item A horizontal force $F$ is used to push $A$ slowly, so that the three coins just barely begin to slide as one rigid body.  Find $F$.
+          \item If the force is increased, $A$ begins to slide relative to $B$ while $B$ and $C$ remain stuck together.  Find the critical force $F_{\text{crit}}$ at which this happens.
+        \end{enumerate}
+
+  \item \textbf{Constant push.}
+        Now a constant force $F = 5\mu_k m g$ pushes $A$; $A$ slides relative to $B$, while $B$ and $C$ stay together.
+        \begin{enumerate}[label=\arabic*.]
+          \item Find the acceleration $a_B$ of coin $B$.
+          \item From the start of the push until $A$ has completely emerged from beneath $B$ (a relative displacement of $2R$), how much time $t$ elapses?
+          \item With everything else unchanged, the force is instead $F = 3\mu_k m g$.  Qualitatively: does relative sliding occur between $A$ and $B$?  If not, what motion does the whole system undergo?
+        \end{enumerate}
+
+  \item \textbf{Up the incline.}
+        After $A$ has emerged from beneath $B$, the three coins slide on the horizontal table, and eventually $A$, $B$, $C$ rush onto the rough incline together with a common speed $v_0$, sliding up a maximum distance $s$.  Over the entire process from the start of the push to the final stop on the incline, the pushing force $F$ does work $W_p$.
+        \begin{enumerate}[label=\arabic*.]
+          \item Write the relation between the total work $W$ done by all friction forces over the whole process and $W_p$.
+          \item Find the magnitude $a$ of the acceleration during the motion up the incline, and write the relation between $v_0$ and $s$.
+        \end{enumerate}
+\end{questions}
+
+\end{problem}
+
+\begin{solution}{20260729}
+
+The vertical normal forces follow immediately from the weights: the contact between $A$ and the table carries $3mg$, between $A$ and $B$ carries $2mg$, and between $B$ and $C$ carries $mg$.
+
+\subsection*{Q1. Slow push}
+
+\textbf{(a)}  To make the whole stack slide as a rigid body, the applied force must overcome the maximum static friction between the bottom coin and the table.  This contact carries the full weight $3mg$, so
+\[
+  \boxed{F = 3\mu_s m g}.
+\]
+
+\textbf{(b)}  Once the stack is sliding, the table exerts kinetic friction $3\mu_k mg$ on $A$.  If the three coins still move together with common acceleration $a$, Newton's law for the whole stack gives
+\[
+  3m\,a = F - 3\mu_k m g
+  \qquad\Longrightarrow\qquad
+  a = \frac{F - 3\mu_k m g}{3m}.
+\]
+The friction between $A$ and $B$ must accelerate the two coins above it, so
+\[
+  f_{AB} = 2m\,a = \tfrac{2}{3}\bigl(F - 3\mu_k m g\bigr).
+\]
+$A$ begins to slip relative to $B$ when this required force reaches the static limit $2\mu_s mg$:
+\[
+  \tfrac{2}{3}\bigl(F_{\text{crit}} - 3\mu_k m g\bigr) = 2\mu_s m g
+  \;\Longrightarrow\;
+  \boxed{F_{\text{crit}} = 3(\mu_s + \mu_k)\,m g}.
+\]
+At this force the $B$--$C$ interface is also at its limit ($f_{BC} = m a = \mu_s mg$); since $\mu_s > \mu_k$, once $A$--$B$ slips to kinetic friction the acceleration of $B,C$ drops, so $B$ and $C$ remain stuck together, as stated.
+
+\subsection*{Q2. Constant push}
+
+\textbf{(a)}  With $A$--$B$ slipping, the kinetic friction that $A$ exerts on $B$ is $2\mu_k m g$.  This is the only horizontal force accelerating the combined $B+C$ (mass $2m$), so
+\[
+  2m\,a_B = 2\mu_k m g
+  \;\Longrightarrow\;
+  \boxed{a_B = \mu_k g}.
+\]
+
+\textbf{(b)}  On coin $A$ the forces are $F$ forward, and the kinetic frictions $3\mu_k mg$ (table) and $2\mu_k mg$ (from $B$) backward, so
+\[
+  m\,a_A = F - 3\mu_k m g - 2\mu_k m g = F - 5\mu_k m g.
+\]
+With $F = 5\mu_k m g$ this gives $a_A = 0$.  The relative acceleration between $B$ and $A$ is therefore $\mu_k g$, and the relative displacement grows as
+\[
+  2R = \tfrac12\,a_{\text{rel}}\,t^{2} = \tfrac12\,\mu_k g\,t^{2}
+  \;\Longrightarrow\;
+  \boxed{t = 2\sqrt{\frac{R}{\mu_k g}}}.
+\]
+
+\textbf{(c)}  With $F = 3\mu_k m g$, the force is less than the maximum static friction $3\mu_s m g$ that the table can supply (recall $\mu_s > \mu_k$).  The stack therefore does not slide at all: there is \textbf{no} relative slip between $A$ and $B$, and the whole system remains at rest.
+
+\subsection*{Q3. Up the incline}
+
+\textbf{(a)}  The whole process starts and ends at rest, so the total change in kinetic energy is zero.  The only forces doing work are the push $F$ (positive work $W_p$), the friction forces (total work $W$, negative), and gravity.  Going up the incline, the three coins (total mass $3m$) rise a height $s\sin\theta$, so gravity does work $-3mg\,s\sin\theta$.  The work--energy theorem gives
+\[
+  W_p + W - 3mg\,s\sin\theta = 0
+  \;\Longrightarrow\;
+  \boxed{W = 3mg\,s\sin\theta - W_p}.
+\]
+
+\textbf{(b)}  On the incline the forces opposing the motion are the down-slope component of gravity, $3mg\sin\theta$, and kinetic friction $3\mu_k m g\cos\theta$.  Hence the deceleration has magnitude
+\[
+  \boxed{a = g\bigl(\sin\theta + \mu_k\cos\theta\bigr)}.
+\]
+Since the stack stops after distance $s$ from speed $v_0$, the constant-acceleration relation $v_0^{2} = 2as$ gives
+\[
+  \boxed{v_0 = \sqrt{2gs\bigl(\sin\theta + \mu_k\cos\theta\bigr)}}.
+\]
+
+\end{solution}
+
+\input qpd-end

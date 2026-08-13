@@ -1,19 +1,19 @@
 {
   "id": "20260803",
   "date": "2026-08-03",
-  "name": "Three Coins Again",
+  "name": "The Trolley Problem",
   "setter": [
-    "Alice Liu"
+    "Andy He"
   ],
-  "score": "12",
+  "score": "6",
   "status": "",
   "topic": "mechanics",
-  "difficulty": 4,
+  "difficulty": 2,
   "tags": [
     "mechanics",
-    "collisions",
-    "oscillations",
-    "momentum"
+    "rotation",
+    "rolling",
+    "energy"
   ],
   "open": false,
   "resources": []

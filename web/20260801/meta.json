@@ -1,0 +1,22 @@
+{
+  "id": "20260801",
+  "date": "2026-08-01",
+  "name": "Ionic Bonding",
+  "setter": [
+    "Ryan Huang"
+  ],
+  "score": "10",
+  "status": "",
+  "topic": "electromagnetism",
+  "difficulty": 4,
+  "tags": [
+    "electromagnetism",
+    "electrostatics",
+    "ionic bonding",
+    "energy"
+  ],
+  "open": false,
+  "resources": [
+    "calculator"
+  ]
+}

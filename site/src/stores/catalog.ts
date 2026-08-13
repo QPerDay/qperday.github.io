@@ -1,5 +1,6 @@
 import { computed } from 'vue'
 import { defineStore } from 'pinia'
+import Fuse from 'fuse.js'
 import type { ProblemMeta, ProblemQuery } from '@/types'
 import { slugify } from '@/lib/slug'
 
@@ -18,6 +19,13 @@ function loadProblems(): ProblemMeta[] {
 
 export const useCatalog = defineStore('catalog', () => {
   const problems = loadProblems()
+
+  // Fuzzy search over name / topic / tags, built once over the whole catalog.
+  const fuse = new Fuse(problems, {
+    keys: ['name', 'topic', 'tags'],
+    threshold: 0.4,
+    ignoreLocation: true,
+  })
 
   const ids = computed(() => problems.map((p) => p.id))
 
@@ -73,19 +81,24 @@ export const useCatalog = defineStore('catalog', () => {
     return tags.value.find(([name]) => slugify(name) === slug)?.[0]
   }
 
-  // Basic client-side querying over the bundled catalog.
+  // Client-side querying over the bundled catalog.  Search is fuzzy (Fuse.js);
+  // the remaining filters are exact and combine with search via AND.
   function query(q: ProblemQuery): ProblemMeta[] {
-    const term = q.search?.trim().toLowerCase() ?? ''
-    return problems.filter((p) => {
+    const term = q.search?.trim() ?? ''
+
+    // Start from the full list (chronological), or the fuzzy matches (ranked
+    // best-first) when a search term is present.
+    const base = term ? fuse.search(term).map((r) => r.item) : problems
+
+    return base.filter((p) => {
       if (q.status === 'ok' && p.status === 'err') return false
       if (q.status === 'err' && p.status !== 'err') return false
       if (q.setter && !p.setter.includes(q.setter)) return false
       if (q.topic && p.topic !== q.topic) return false
       if (q.tag && !p.tags.includes(q.tag)) return false
-      if (term) {
-        const hay = `${p.name} ${p.topic} ${p.tags.join(' ')}`.toLowerCase()
-        if (!hay.includes(term)) return false
-      }
+      // ISO dates compare lexicographically, so string comparison is correct.
+      if (q.dateFrom && p.date < q.dateFrom) return false
+      if (q.dateTo && p.date > q.dateTo) return false
       return true
     })
   }

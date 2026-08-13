@@ -164,20 +164,28 @@ def main():
         stmt = outdir / "statement.pdf"
         ans = outdir / "answer.pdf"
 
+        # Change detection is purely content + output existence — no metadata.
         need_stmt = changed or not stmt.exists()
-        need_ans = (not record["open"]) and (changed or not ans.exists())
+        need_ans = changed or not ans.exists()
 
-        # `open` problems never ship an answer: drop any stale answer.pdf.
+        # `open` is a separate suppression rule, applied AFTER detection:
+        # an open problem must never ship an answer.  It does not participate
+        # in deciding whether the source changed.
         if record["open"]:
             ans.unlink(missing_ok=True)
+            need_ans = False
 
         if not (need_stmt or need_ans):
             skipped.append(pid)
             continue
 
         recompiled.append(pid)
-        print(f"[{pid}] compiling statement.pdf"
-              + ("" if record["open"] else " + answer.pdf") + " ...")
+        parts = []
+        if need_stmt:
+            parts.append("statement.pdf")
+        if need_ans:
+            parts.append("answer.pdf")
+        print(f"[{pid}] compiling " + " + ".join(parts) + " ...")
 
         ok = True
         if need_stmt:

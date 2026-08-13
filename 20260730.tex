@@ -1,0 +1,110 @@
+\input qpd-bootstrap
+
+\begin{problem}{20260730}
+  \meta{name}{Launching Off a Planet}
+  \meta{setter}{Sophie Chen}
+  \meta{score}{12}
+  \meta{topic}{mechanics}
+  \meta{difficulty}{5}
+  \meta{tags}{mechanics, gravitation, orbital motion, energy, kinematics, springs}
+
+Dr.\ Wen is visiting a planet of radius $R = 6\times10^{6}\,\mathrm{m}$ and mass $M = 2.16\times10^{24}\,\mathrm{kg}$.  An orbit is designed at an altitude of $h = 2.5\times10^{4}\,\mathrm{m}$ above the surface.
+
+Now Dr.\ Wen is going to leave.  Being strong, he decides to propel himself (mass $m = 60\,\mathrm{kg}$) using a spring of stiffness $k = 1.2\times10^{7}\,\mathrm{N/m}$.  This gives him an initial velocity of magnitude $v_0$, directed at an angle $\theta$ above the local tangent to the ground.
+
+\begin{assumptions}
+  \item The planet is a uniform sphere; only its gravitation acts on Dr.\ Wen after launch.
+  \item The launch happens from a small platform at the surface, and the spring's compression is much shorter than the planet's radius, so the change in gravitational potential energy during spring expansion is negligible.
+  \item For the flat-ground part (Q2), the surface is locally flat and the gravitational field is uniform with the surface value $g = GM/R^{2}$.
+\end{assumptions}
+
+\begin{questions}
+  \item \textbf{Orbital speed.}
+        Dr.\ Wen enters orbit by himself, maintaining a uniform linear speed while travelling around the circular orbit at altitude $h$.  Find this speed $v_{\text{orbit}}$.
+
+  \item \textbf{Vertical launch speed.}
+        Now approximate the surface as locally flat, with a uniform vertical gravitational field (take $+x$ tangent to the planet and $+y$ normal, upward).  Using kinematics for constant-acceleration vertical motion, find the vertical component of the initial velocity.
+
+  \item \textbf{Initial velocity.}
+        Using the results of parts (1) and (2), calculate $v_0$ (and the angle $\theta$).
+
+  \item \textbf{Spring compression.}
+        When the spring is released, its elastic potential energy converts completely into the traveller's initial kinetic energy.  Neglecting the change in gravitational potential energy during spring expansion, find the preloaded compression distance $x$ of the spring.
+
+  \item \textbf{Orbital force.}
+        The traveller moves steadily along the circular orbit.  Calculate the magnitude of the universal gravitational force exerted by the planet on the traveller.
+\end{questions}
+
+\end{problem}
+
+\begin{solution}{20260730}
+
+The gravitational parameter is
+\[
+  GM = (6.67\times10^{-11})(2.16\times10^{24}) = 1.44\times10^{14}\ \mathrm{m^{3}\,s^{-2}}.
+\]
+
+\subsection*{Q1. Orbital speed}
+
+The orbital radius is $r = R + h = 6.025\times10^{6}\,\mathrm{m}$.  For a circular orbit the gravitational force supplies the centripetal force, so
+\[
+  \frac{G M m}{r^{2}} = \frac{m v_{\text{orbit}}^{2}}{r}
+  \;\Longrightarrow\;
+  v_{\text{orbit}} = \sqrt{\frac{GM}{r}}
+  = \sqrt{\frac{1.44\times10^{14}}{6.025\times10^{6}}}
+  = \boxed{4.89\times10^{3}\ \mathrm{m/s}}.
+\]
+
+\subsection*{Q2. Vertical launch speed}
+
+The surface gravity is
+\[
+  g = \frac{GM}{R^{2}} = \frac{1.44\times10^{14}}{(6\times10^{6})^{2}}
+    = 4.00\ \mathrm{m/s^{2}}.
+\]
+In the flat, uniform-field approximation the traveller reaches the orbit altitude $h$ when his vertical velocity has been reduced to zero (the top of the ballistic arc, where he is moving purely tangentially).  With $v_{y}^{2} = 2gh$,
+\[
+  \boxed{v_{y} = \sqrt{2gh} = \sqrt{2(4.00)(2.5\times10^{4})}
+         = 447\ \mathrm{m/s}}.
+\]
+
+\subsection*{Q3. Initial velocity}
+
+The tangential component is $v_{x} = v_{\text{orbit}}$ (no horizontal force in the flat approximation), so
+\[
+  v_0 = \sqrt{v_{x}^{2} + v_{y}^{2}}
+      = \sqrt{(4.89\times10^{3})^{2} + (447)^{2}}
+      = \boxed{4.91\times10^{3}\ \mathrm{m/s}},
+\]
+at an angle
+\[
+  \theta = \arctan\frac{v_{y}}{v_{x}}
+         = \arctan\frac{447}{4890}
+         = \boxed{5.2^{\circ}}
+\]
+above the tangent.
+
+\subsection*{Q4. Spring compression}
+
+The spring stores elastic energy $\tfrac12 k x^{2}$, which becomes the launch kinetic energy $\tfrac12 m v_0^{2}$.  Equating,
+\[
+  \tfrac12 k x^{2} = \tfrac12 m v_0^{2}
+  \;\Longrightarrow\;
+  x = v_0\sqrt{\frac{m}{k}}
+    = (4.91\times10^{3})\sqrt{\frac{60}{1.2\times10^{7}}}
+    = \boxed{11.0\ \mathrm{m}}.
+\]
+
+\subsection*{Q5. Orbital force}
+
+By Newton's law of gravitation at the orbit,
+\[
+  F = \frac{G M m}{r^{2}}
+    = \frac{(1.44\times10^{14})(60)}{(6.025\times10^{6})^{2}}
+    = \boxed{238\ \mathrm{N}},
+\]
+in agreement with $F = m v_{\text{orbit}}^{2}/r$.
+
+\end{solution}
+
+\input qpd-end

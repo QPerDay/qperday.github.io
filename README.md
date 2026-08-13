@@ -182,6 +182,51 @@ Follow these uniformly across every problem file. They keep the booklet looking 
 - **Vectors & magnitudes** — `\arr{v}` for vectors, `\abs{x}` for magnitude, `\norm{x}` for norm, `\inner{a}{b}` for inner product.
 - **Prose style** — two spaces after a sentence-ending period; em-dash as `---`; `Dr.\ Wen` with a backslash-space after the abbreviation.
 
+## Tag vocabulary
+
+`tags` is a controlled, flat vocabulary of atomic concepts. Use only the
+canonical spelling below — pick the most general form and avoid synonyms
+(`rotation`, not "rotational dynamics"; `energy`, not "work-energy" or
+"potential energy"). A problem lists every tag that applies, comma-separated,
+in the `\meta{tags}{...}` line; `topic` is simply the most significant one of
+those tags.
+
+- centripetal force
+- circular motion
+- collisions
+- control theory
+- differential equations
+- dynamics
+- electromagnetism
+- electrostatics
+- energy
+- feedback
+- fluid mechanics
+- friction
+- gravitation
+- inclined plane
+- ionic bonding
+- kinematics
+- Kepler
+- Lorentz force
+- magnetic field
+- mechanics
+- momentum
+- Newton's laws
+- optics
+- orbital motion
+- oscillations
+- pendulum
+- photography
+- projectile motion
+- rigid body
+- rolling
+- rolling shutter
+- rotation
+- springs
+- variable mass
+- viscosity
+
 ## Assets
 
 If you want to use external resources (images, graphs, whatever), name them like this:

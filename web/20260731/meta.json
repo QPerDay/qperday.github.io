@@ -1,19 +1,20 @@
 {
   "id": "20260731",
   "date": "2026-07-31",
-  "name": "The Trolley Problem",
+  "name": "Swing Dynamics",
   "setter": [
-    "Andy He"
+    "Jason Zhang"
   ],
-  "score": "6",
+  "score": "10",
   "status": "",
   "topic": "mechanics",
-  "difficulty": 2,
+  "difficulty": 5,
   "tags": [
     "mechanics",
-    "rotation",
-    "rolling",
-    "energy"
+    "pendulum",
+    "circular motion",
+    "energy",
+    "centripetal force"
   ],
   "open": false,
   "resources": []

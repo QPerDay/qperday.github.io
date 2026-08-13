@@ -1,0 +1,23 @@
+{
+  "id": "20260728",
+  "date": "2026-07-28",
+  "name": "Cart on a Track",
+  "setter": [
+    "Elton Liu"
+  ],
+  "score": "15",
+  "status": "",
+  "topic": "mechanics",
+  "difficulty": 5,
+  "tags": [
+    "mechanics",
+    "energy",
+    "friction",
+    "collisions",
+    "circular motion",
+    "centripetal force",
+    "kinematics"
+  ],
+  "open": false,
+  "resources": []
+}
