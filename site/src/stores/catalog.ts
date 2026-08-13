@@ -13,8 +13,8 @@ const modules = import.meta.glob('../data/problem-*.json', {
 }) as Record<string, ProblemMeta>
 
 function loadProblems(): ProblemMeta[] {
-  // Sort by ID (YYYYMMDD) = chronological order.
-  return Object.values(modules).sort((a, b) => a.id.localeCompare(b.id))
+  // Newest first: IDs are YYYYMMDD, so descending lexicographic = reverse-chronological.
+  return Object.values(modules).sort((a, b) => b.id.localeCompare(a.id))
 }
 
 export const useCatalog = defineStore('catalog', () => {

@@ -16,6 +16,6 @@
     "kinematics",
     "rigid body"
   ],
-  "open": true,
+  "open": false,
   "resources": []
 }

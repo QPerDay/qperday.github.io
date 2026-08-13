@@ -8,6 +8,7 @@
       <RouterLink to="/topics">Topics</RouterLink>
       <RouterLink to="/tags">Tags</RouterLink>
       <RouterLink to="/setters">Setters</RouterLink>
+      <RouterLink to="/about">About</RouterLink>
     </nav>
   </header>
 
