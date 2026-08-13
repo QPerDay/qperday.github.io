@@ -4,8 +4,17 @@ import { useCatalog } from '@/stores/catalog'
 
 const catalog = useCatalog()
 
-// The most recent problem (highest ID) is "today's" problem.
-const latest = computed(() => catalog.problems[catalog.problems.length - 1])
+// Today's date as a `YYYYMMDD` problem ID (local time).
+const todayId = (() => {
+  const now = new Date()
+  const y = now.getFullYear()
+  const m = String(now.getMonth() + 1).padStart(2, '0')
+  const d = String(now.getDate()).padStart(2, '0')
+  return `${y}${m}${d}`
+})()
+
+// The problem dated today, if one exists.
+const today = computed(() => catalog.problem(todayId))
 </script>
 
 <template>
@@ -14,10 +23,12 @@ const latest = computed(() => catalog.problems[catalog.problems.length - 1])
     <p class="tagline">A curated collection of physics problems by the QPD problem-setting group.</p>
 
     <div class="cta">
-      <RouterLink v-if="latest" :to="`/problem/${latest.id}`" class="btn btn--primary">
+      <RouterLink v-if="today" :to="`/problem/${today.id}`" class="btn btn--primary">
         Today's Problem
       </RouterLink>
-      <RouterLink to="/problem" class="btn btn--secondary">Catalog</RouterLink>
+      <RouterLink to="/problem" class="btn" :class="today ? 'btn--secondary' : 'btn--primary'">
+        Catalog
+      </RouterLink>
     </div>
   </section>
 </template>
