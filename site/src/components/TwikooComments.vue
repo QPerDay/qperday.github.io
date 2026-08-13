@@ -7,7 +7,7 @@ import { onMounted } from 'vue'
 // lives in the parent (ProblemView), which controls when the body is visible.
 const props = defineProps<{ path?: string }>()
 
-const ENV_ID = 'https://qpd-twikoo-vercel.vercel.app'
+const ENV_ID = 'https://qpd-comments.makabaka1880.xyz'
 const SCRIPT_ID = 'twikoo-script'
 const SCRIPT_URL = 'https://cdn.jsdelivr.net/npm/twikoo@1.7.15/dist/twikoo.min.js'
 
