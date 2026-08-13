@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "license": "MIT",
+  "packageManager": "pnpm@10.15.0",
   "type": "module",
   "scripts": {
     "sync": "node scripts/sync.mjs",
