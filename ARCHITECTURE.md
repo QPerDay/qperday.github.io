@@ -86,8 +86,9 @@ finally into the site's compiled bundle.
 
 | Command | Purpose |
 |---|---|
-| `\title{...}` | Cover title |
+| `\title{...}` | Cover title (unused if a cover image is set) |
 | `\date{...}` | Cover date |
+| `\coverimage{path}` | Cover artwork (relative path); empty = no image |
 | `\intro{...}` | Foreword prose |
 | `\problemsintro{...}` | Prose above the Problems TOC |
 | `\answersintro{...}` | Prose above the Answers TOC |
@@ -195,7 +196,7 @@ The web exporter injects exactly these flags to produce `statement.pdf` and
 
 `QPDBooklet.cls` (base `report`) produces, in order:
 
-1. **Cover** — `\title`, collected setters, `\date`
+1. **Cover** — `\coverimage` (if set); art only, no title
 2. **Foreword** — `\intro` text + setter list
 3. **Problems TOC** — prose (`\problemsintro`) + a list of *months*
 4. **Month fronts** — one `\chapter*` page per month with a mini-TOC

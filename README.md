@@ -84,6 +84,8 @@ I wrote a custom `documentclass` called `QPDBooklet`. Every problem gets a date 
 
 The idea: write each problem in its own file, then `\input` them all into `main.tex`. Each problem file is also compilable by itself (no command-line flags — just hit "compile"), so you can preview your work without building the whole booklet.
 
+The class files are **generic** — they don't know about this specific problem set. The cover artwork is supplied by `main.tex` via `\coverimage{assets/cover.png}`, not baked into the class. If you're writing your own problem set, just don't pass `\coverimage` (or point it at your own image) and the tooling stays reusable.
+
 There are four files doing the heavy lifting:
 
 | File | What it does |
@@ -228,14 +230,70 @@ The JSON is read straight from each problem's `\meta{...}` declarations, so it a
 
 ## Math macros available
 
-These are built into the template. You can use them without loading any packages:
+These are built into the template. You can use them without loading any packages.
 
-| Macro | Output | | Macro | Output |
-|---|---|---|---|---|
-| `\RR`, `\CC`, `\NN`, `\ZZ`, `\QQ` | ℝ, ℂ, ℕ, ℤ, ℚ | | `\arr{v}` | Vector v |
-| `\abs{x}`, `\norm{x}` | Scaled delimiters | | `\inner{a}{b}` | ⟨a, b⟩ |
-| `\parens{x}`, `\bracks{x}`, `\braces{x}` | Scaled brackets | | `\pd{f}{x}` | ∂f/∂x |
-| `\dd{x}`, `\dx`, `\dt`, etc. | Upright differentials | | `\eps`, `\ph`, `\lam` | ε, φ, λ |
+Each row shows the macro **call**, its **expansion** (what it becomes in the
+source), and how it **renders**.
+
+### Vectors & blackboard bold
+
+| Call | Expands to | Renders |
+|---|---|---|
+| `\arr{v}` | `\vec{\mathbf{v}}` | $\vec{\mathbf{v}}$ |
+| `\RR` | `\mathbb{R}` | $\mathbb{R}$ |
+| `\CC` | `\mathbb{C}` | $\mathbb{C}$ |
+| `\NN` | `\mathbb{N}` | $\mathbb{N}$ |
+| `\ZZ` | `\mathbb{Z}` | $\mathbb{Z}$ |
+| `\QQ` | `\mathbb{Q}` | $\mathbb{Q}$ |
+
+### Differentials
+
+| Call | Expands to | Renders |
+|---|---|---|
+| `\dd{x}` | `\mathop{}\!\mathrm{d}x` | $\mathrm{d}x$ |
+| `\dx` | `\dd{x}` | $\mathrm{d}x$ |
+| `\dy` | `\dd{y}` | $\mathrm{d}y$ |
+| `\dz` | `\dd{z}` | $\mathrm{d}z$ |
+| `\dt` | `\dd{t}` | $\mathrm{d}t$ |
+| `\dr` | `\dd{r}` | $\mathrm{d}r$ |
+| `\ds` | `\dd{s}` | $\mathrm{d}s$ |
+| `\du` | `\dd{u}` | $\mathrm{d}u$ |
+| `\dv` | `\dd{v}` | $\mathrm{d}v$ |
+| `\dtheta` | `\dd{\theta}` | $\mathrm{d}\theta$ |
+
+### Derivatives
+
+| Call | Expands to | Renders |
+|---|---|---|
+| `\pd{f}{x}` | `\frac{\partial f}{\partial x}` | $\frac{\partial f}{\partial x}$ |
+
+### Delimiters
+
+| Call | Expands to | Renders |
+|---|---|---|
+| `\abs{x}` | `\left\lvert x \right\rvert` | $\left\lvert x \right\rvert$ |
+| `\norm{x}` | `\left\lVert x \right\rVert` | $\left\lVert x \right\rVert$ |
+| `\inner{a}{b}` | `\left\langle a ,\, b \right\rangle` | $\left\langle a ,\, b \right\rangle$ |
+| `\parens{x}` | `\left( x \right)` | $\left( x \right)$ |
+| `\bracks{x}` | `\left[ x \right]` | $\left[ x \right]$ |
+| `\braces{x}` | `\left\{ x \right\}` | $\left\{ x \right\}$ |
+
+### Operators
+
+| Call | Expands to | Renders |
+|---|---|---|
+| `\dom` | `\operatorname{dom}` | $\operatorname{dom}$ |
+| `\ran` | `\operatorname{ran}` | $\operatorname{ran}$ |
+| `\sgn` | `\operatorname{sgn}` | $\operatorname{sgn}$ |
+| `\im` | `\operatorname{im}` | $\operatorname{im}$ |
+
+### Greek shorthands
+
+| Call | Expands to | Renders |
+|---|---|---|
+| `\eps` | `\varepsilon` | $\varepsilon$ |
+| `\ph` | `\varphi` | $\varphi$ |
+| `\lam` | `\lambda` | $\lambda$ |
 
 ## Project structure
 

@@ -33,6 +33,13 @@
 % ----- \intro command (preamble-only) -----
 \newcommand{\intro}[1]{\def\qpd@introtext{#1}}
 
+% ----- \coverimage command (preamble-only) -----
+% Path to the cover artwork, relative to the project root.  Empty by default
+% (no image).  This keeps the class generic — the cover is supplied by the
+% problem set, not baked into the tooling.
+\newcommand{\coverimage}[1]{\def\qpd@coverimage{#1}}
+\def\qpd@coverimage{}
+
 % Prose on the Problems TOC page and the Answers TOC page.
 \newcommand{\problemsintro}[1]{\def\qpd@problemsintro{#1}}
 \newcommand{\answersintro}[1]{\def\qpd@answersintro{#1}}
@@ -55,9 +62,20 @@
   % ---- Page 1: Cover ----
   \begin{titlepage}
     \centering
-    \vspace*{5cm}
+    \vspace*{2cm}
 
-    {\Huge\bfseries \@title\par}
+    % Cover art, if the document supplied one via \coverimage{...}.
+    % Otherwise the page is blank except for vertical whitespace.
+    \ifdefempty{\qpd@coverimage}{%
+      \vspace*{3cm}%
+    }{%
+      \IfFileExists{\qpd@coverimage}{%
+        \noindent\includegraphics[width=\textwidth]{\qpd@coverimage}%
+      }{%
+        \PackageWarning{QPDBooklet}{Cover image `\qpd@coverimage' not found}%
+        \vspace*{3cm}%
+      }%
+    }%
 
     \vfill
   \end{titlepage}
