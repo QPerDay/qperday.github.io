@@ -22,7 +22,7 @@
         CC BY 4.0
       </a>
       — please credit the authors and
-      <a href="https://github.com/" target="_blank" rel="noopener">get in touch</a> if you reuse a problem.
+      <a href="mailto:sophiec2010@163.com" target="_blank" rel="noopener">get in touch</a> if you reuse a problem.
     </p>
   </footer>
 </template>
