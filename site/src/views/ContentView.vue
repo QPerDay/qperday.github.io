@@ -8,6 +8,7 @@ import type { ProblemMeta } from '@/types'
 import TableOfContents from '@/components/TableOfContents.vue'
 import TwikooComments from '@/components/TwikooComments.vue'
 import NotFoundState from '@/components/NotFoundState.vue'
+import BlogEntryCard from '@/components/content/BlogEntryCard.vue'
 
 const props = defineProps<{ slug: string }>()
 
@@ -93,7 +94,7 @@ function onSheetClick(e: MouseEvent) {
           <h2 class="entry__backlinks-title">{{ t('content.referenced_in') }}</h2>
           <ul class="entry__backlinks-list">
             <li v-for="e in referencingEntries" :key="e.slug">
-              <RouterLink :to="`/blog/${e.slug}`">{{ e.title }}</RouterLink>
+              <BlogEntryCard :slug="e.slug" />
             </li>
           </ul>
         </section>
@@ -376,10 +377,7 @@ function onSheetClick(e: MouseEvent) {
   padding: 0;
   margin: 0;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: var(--s2);
-}
-.entry__backlinks-list a {
-  color: var(--c-accent);
 }
 </style>

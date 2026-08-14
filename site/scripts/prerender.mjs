@@ -86,6 +86,25 @@ const uniqueRoutes = []
 const entryUrl = pathToFileURL(path.join(siteRoot, 'dist-server', 'entry-server.js')).href
 const { render } = await import(entryUrl)
 
+// Guard: the SSR bundle bakes the content.json that existed when it was
+// built.  An interrupted `compile-content` run can leave a bootstrap-shaped
+// file (metadata only, empty html) behind — baking it produces empty blog
+// pages that then fail hydration.  Fail loudly before rendering anything.
+const contentJson = JSON.parse(
+  readFileSync(path.join(siteRoot, 'src/generated/content.json'), 'utf8'),
+)
+const anyEmptyHtml = Object.values(contentJson).some((bySlug) =>
+  Object.values(bySlug).some((e) => !e.html),
+)
+if (anyEmptyHtml) {
+  console.error(
+    '[prerender] src/generated/content.json contains entries with empty html — ' +
+      'an interrupted `compile-content` run left it in bootstrap state. ' +
+      'Re-run the full build (`pnpm build`), which regenerates it.',
+  )
+  process.exit(1)
+}
+
 // The client build's dist/index.html is the page template (hashed asset URLs,
 // placeholder comment, replaceable <title>).
 const template = readFileSync(path.join(distDir, 'index.html'), 'utf8')

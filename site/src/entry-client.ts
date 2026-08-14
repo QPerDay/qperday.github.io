@@ -10,8 +10,18 @@ import '@/assets/main.css'
 import '@/assets/content.css'
 
 // createSSRApp (not createApp) so the client *hydrates* the prerendered HTML
-// emitted by scripts/prerender.mjs instead of re-rendering over it.  In dev
-// (no prerendered HTML) Vue falls back to a full client render.
+// emitted by scripts/prerender.mjs instead of re-rendering over it.
+//
+// In dev, index.html's `<!--app-html-->` placeholder is served verbatim (only
+// scripts/prerender.mjs replaces it, and it only runs in the prod build).
+// Hydrating the app against a lone comment node logs a spurious mismatch and
+// re-renders everything anyway — so detect the un-replaced placeholder and
+// clear it, letting Vue do a clean full client render with no warnings.
+const container = document.querySelector('#app')
+if (container && container.innerHTML.trim() === '<!--app-html-->') {
+  container.innerHTML = ''
+}
+
 const app = createSSRApp(App)
 
 app.use(createPinia())

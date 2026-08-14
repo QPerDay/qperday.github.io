@@ -7,7 +7,7 @@
 // inside a throwaway SSR app that provides pinia, vue-router and vue-i18n so
 // the MDC content components (ProblemCard, BlogEntryCard, boxes, …) can
 // `inject()` their context and `RouterLink` renders real `<a href>`s.
-import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { h, createSSRApp } from 'vue'
 import type { App as VueApp, VNodeChild } from 'vue'
@@ -102,6 +102,12 @@ export async function compileContent({ siteRoot, outFile }: CompileContentOption
   }
 
   mkdirSync(path.dirname(outFile), { recursive: true })
-  writeFileSync(outFile, JSON.stringify(data, null, 2) + '\n')
+  // Atomic write (temp + rename): an interrupted run must never leave a
+  // half-written or bootstrap-shaped content.json on disk — the next
+  // `vite build` (client or SSR) bakes whatever the file contains, and a
+  // stale empty file produces empty prerendered pages.
+  const tmpFile = `${outFile}.tmp`
+  writeFileSync(tmpFile, JSON.stringify(data, null, 2) + '\n')
+  renameSync(tmpFile, outFile)
   console.log(`[compile-content] wrote ${count} entries to ${outFile}`)
 }

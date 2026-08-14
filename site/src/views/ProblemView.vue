@@ -6,6 +6,7 @@ import { slugify } from '@/lib/slug'
 import { useEntriesReferencingProblem } from '@/lib/content'
 import TwikooComments from '@/components/TwikooComments.vue'
 import NotFoundState from '@/components/NotFoundState.vue'
+import BlogEntryCard from '@/components/content/BlogEntryCard.vue'
 
 // Lazy-load the PDF viewer so its heavy bundle (viewer JS + pdfium WASM) is
 // only fetched when the modal is first opened, not on every problem-page visit.
@@ -124,6 +125,16 @@ const pdfUrl = (which: 'statement' | 'answer') =>
             </template>
         </dl>
 
+        <section v-if="referencing.length" class="references">
+            <h2 class="references__title">{{ t('problem.referenced_by') }}</h2>
+            <!-- Article cards, matching the blog view's backlinks list. -->
+            <ul class="references__list">
+                <li v-for="e in referencing" :key="e.slug">
+                    <BlogEntryCard :slug="e.slug" />
+                </li>
+            </ul>
+        </section>
+
         <div class="toolbar">
             <button class="action" type="button" :data-tip="t('problem.pdf_tooltip_question')"
                 @click="open('statement')">
@@ -142,15 +153,6 @@ const pdfUrl = (which: 'statement' | 'answer') =>
         <div class="comments">
             <TwikooComments />
         </div>
-
-        <section v-if="referencing.length" class="references">
-            <h2 class="references__title">{{ t('problem.referenced_by') }}</h2>
-            <ul class="references__list">
-                <li v-for="e in referencing" :key="e.slug">
-                    <RouterLink :to="`/blog/${e.slug}`">{{ e.title }}</RouterLink>
-                </li>
-            </ul>
-        </section>
 
         <dialog ref="dialog" class="modal"
             :aria-label="view === 'statement' ? t('problem.problem_statement') : t('problem.answer')" @close="close"
@@ -288,15 +290,17 @@ const pdfUrl = (which: 'statement' | 'answer') =>
 }
 
 .comments {
-    order: 3;
+    order: 4;
     flex: 1 1 100%;
 }
 
-/* Blog entries referencing this problem. */
+/* Blog entries referencing this problem — sits below the metadata table and
+   before the comments thread on desktop; on mobile it moves above the Q/A
+   toolbar (see the media block). */
 .references {
-    order: 4;
+    order: 3;
     flex: 1 1 100%;
-    margin-top: var(--s4);
+    margin: var(--s4) 0;
 }
 .references__title {
     font-size: 0.8rem;
@@ -311,11 +315,12 @@ const pdfUrl = (which: 'statement' | 'answer') =>
     padding: 0;
     margin: 0;
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: var(--s2);
 }
-.references__list a {
-    color: var(--c-accent);
+.references__list li {
+    /* Cards fill the list width, capped to a readable measure. */
+    max-width: 36rem;
 }
 
 /* Custom tooltip — appears immediately on hover/focus (native `title` has a
@@ -467,16 +472,16 @@ const pdfUrl = (which: 'statement' | 'answer') =>
         order: 1;
     }
 
-    .toolbar {
+    .references {
         order: 2;
+    }
+
+    .toolbar {
+        order: 3;
         flex-direction: column;
     }
 
     .comments {
-        order: 3;
-    }
-
-    .references {
         order: 4;
     }
 
