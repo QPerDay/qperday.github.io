@@ -47,7 +47,7 @@ cd site
 pnpm install
 pnpm sync                  # copy web/ into src/data/ and public/data/
 pnpm dev                   # local dev server
-pnpm build                 # production build → site/dist/
+pnpm build                 # production build → site/dist/ (static site)
 ```
 
 `./export.sh --web` is incremental — it skips problems whose source hasn't
@@ -56,6 +56,23 @@ image), delete that problem's line from `.qpd-web-hashes.json`.
 
 The `web/` directory is **committed to git**. CI consumes the committed export
 rather than recompiling the TeX, so it never needs a TeX installation.
+
+`pnpm build` is a real static-site build (not a SPA bundle):
+
+1. `node scripts/compile-content.mjs` — **compiles every blog Markdown file to
+   HTML at build time** (markdown-it + MDC + Shiki + KaTeX) into
+   `src/generated/content.json`, including reference metadata (referenced
+   problem IDs, referenced blog slugs, headings). The client never runs
+   markdown-it/Shiki/KaTeX at runtime,
+2. `type-check` (vue-tsc),
+3. `vite build` (client) + `vite build --ssr` (server entry),
+4. `node scripts/prerender.mjs` — renders **one `dist/<route>/index.html` per
+   route** plus a real `dist/404.html`, via Vue SSR.
+
+`src/generated/` is **gitignored** — it is a pure build artifact, regenerated
+from scratch by every `pnpm build` (and by `pnpm dev`, so Markdown edits are
+picked up in dev). Because the compile step runs before type-check, a fresh
+clone builds with no committed copy of it.
 
 ### Continuous integration (GitHub Pages)
 
@@ -68,14 +85,31 @@ What it does (and doesn't do):
   `web/` export that is committed to the repo.
 - Runs `pnpm sync` (flatten `web/` → `site/src/data/` + `site/public/data/`),
   `pnpm install --frozen-lockfile`, and `pnpm build`.
-- Serves the SPA from a `404.html` fallback (so deep links like
-  `/problem/20260803` resolve client-side).
+- The build prerenders every route (`/problem/20260803`, `/blog/…`, …) to its
+  own `index.html` and emits a real `404.html`, so deep links and search
+  crawlers get fully rendered pages with no JS.
 - Uploads the built `site/dist/` and deploys it with GitHub's official Pages
   actions (no PAT needed).
 
 To enable it: **Settings → Pages → Source: GitHub Actions**, then push to
 `main`. Because CI relies on the committed `web/`, remember to re-run
 `./export.sh --web` and commit the changes whenever a problem's PDF changes.
+
+### Writing blog entries
+
+Blog entries live in `site/src/content/{en,zh}/*.md`, with YAML frontmatter
+(`title`, `description`, `date`, `author`) followed by an MDC body. They are
+compiled to static HTML at build time (see above), with full support for
+LaTeX math (`$…$`, `$$…$$`), fenced code highlighting (Shiki), and custom MDC
+components — see `site/src/components/content/*.vue` (`problem-box`,
+`answer-box`, `warning-box`, `info-box`, `error-box`, `theorem-box`,
+`foldable`, `pic`, `desmos`, `problem-card`, `blog-entry-card`).
+
+Cross-referencing is automatic: `:problem-card{id="20260727"}` links to a
+problem, `:blog-entry-card{slug="0412-jacobian-guide"}` links to another
+entry, and the site shows the backlinks in both directions (an entry's header
+lists its referenced problems and the entries referencing it; each problem
+page lists the entries referencing it).
 
 ## Architecture
 > This is just tech details. Skip this if you are not interested in how the plumbing works.
@@ -355,10 +389,21 @@ QPD/
 ├── export.sh              # bundle sources -> export/ (or --web -> web/)
 ├── export_web.py          # incremental web exporter (JSON + PDFs)
 ├── assets/                # images named YYYYMMDD-idx.ext
-├── site/                  # Vue 3 + Vite static site
-│   ├── src/stores/catalog.ts   # compile-time metadata injection + querying
-│   ├── src/views/              # index / problems / topics / tags / setters
-│   └── scripts/sync.mjs        # copy web/ into src/data/ + public/data/
+├── site/                  # Vue 3 + Vite static site (SSG)
+│   ├── index.html             # Vite entry template (prerender injects HTML)
+│   ├── src/
+│   │   ├── entry-client.ts    # hydrates the prerendered HTML
+│   │   ├── entry-server.ts    # SSR render(url), used by prerender
+│   │   ├── content/{en,zh}/   # blog entries (Markdown + MDC frontmatter)
+│   │   ├── generated/         # compiled content.json (gitignored, build-only)
+│   │   ├── components/content/  # MDC components (boxes, cards, foldable, …)
+│   │   ├── stores/catalog.ts  # compile-time metadata injection + querying
+│   │   ├── views/             # index / problems / topics / tags / setters / blog
+│   │   └── lib/               # content, frontmatter, mdc (build-only), …
+│   └── scripts/
+│       ├── sync.mjs           # copy web/ into src/data/ + public/data/
+│       ├── compile-content.mjs  # Markdown → HTML at build time
+│       └── prerender.mjs      # one dist/<route>/index.html per route
 ├── EXTENDING.md           # how to add a metadata field end-to-end
 └── ARCHITECTURE.md        # original design notes
 ```

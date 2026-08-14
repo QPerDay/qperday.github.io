@@ -5,6 +5,7 @@ import { useCatalog } from '@/stores/catalog'
 import { slugify } from '@/lib/slug'
 import { useEntriesReferencingProblem } from '@/lib/content'
 import TwikooComments from '@/components/TwikooComments.vue'
+import NotFoundState from '@/components/NotFoundState.vue'
 
 // Lazy-load the PDF viewer so its heavy bundle (viewer JS + pdfium WASM) is
 // only fetched when the modal is first opened, not on every problem-page visit.
@@ -25,7 +26,9 @@ const catalog = useCatalog()
 const problem = computed(() => catalog.problem(props.id))
 
 // Blog entries (active locale) that reference this problem via a problem card.
-const referencing = useEntriesReferencingProblem(props.id)
+// Getter, not value: the router reuses this component instance between
+// `/problem/:id` routes, so the hook must re-read the prop on every change.
+const referencing = useEntriesReferencingProblem(() => props.id)
 
 // Which document is shown in the dialog.  `null` = closed.
 const view = ref<'statement' | 'answer' | null>(null)
@@ -167,7 +170,15 @@ const pdfUrl = (which: 'statement' | 'answer') =>
         </dialog>
     </article>
 
-    <p v-else class="empty">{{ t('problem.not_found', { id }) }}</p>
+    <NotFoundState
+      v-else
+      kind="Problem"
+      attr="id"
+      :value="id"
+      :message="t('problem.not_found', { id })"
+      to="/problem"
+      :back-label="t('notfound.back_to', { target: t('nav.problems') })"
+    />
 </template>
 
 <style scoped>

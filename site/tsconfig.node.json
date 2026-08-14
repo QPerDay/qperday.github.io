@@ -6,7 +6,8 @@
     "vitest.config.*",
     "cypress.config.*",
     "playwright.config.*",
-    "eslint.config.*"
+    "eslint.config.*",
+    "scripts/**/*.ts"
   ],
   "compilerOptions": {
     // Most tools use transpilation instead of Node.js's native type-stripping.
@@ -14,8 +15,14 @@
     "module": "preserve",
     "moduleResolution": "bundler",
 
-    // Include Node.js types and avoid accidentally including other `@types/*` packages.
-    "types": ["node"],
+    // vite/client declares `import.meta.glob`, used by the build-only modules
+    // the content compiler pulls in (src/lib/mdc.ts, src/stores/catalog.ts).
+    "types": ["node", "vite/client"],
+
+    // Same path mapping as the app project, for the compiler's `@/` imports.
+    "paths": {
+      "@/*": ["./src/*"]
+    },
 
     // Disable emitting output during `vue-tsc --build`, which is used for type-checking only.
     "noEmit": true,

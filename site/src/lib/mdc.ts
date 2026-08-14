@@ -5,7 +5,13 @@ import type { Component, VNode, VNodeChild } from 'vue'
 import katex from 'katex'
 import { createHighlighter } from 'shiki'
 import type { Highlighter } from 'shiki'
-import 'katex/dist/katex.min.css'
+
+// Build-only module: it runs only inside the content compiler
+// (scripts/compile-entry.ts).  Nothing at runtime imports this file — the
+// compiled HTML lives in src/generated/content.json and KaTeX's stylesheet is
+// part of the global src/assets/content.css.
+import type { HeadingItem } from '@/lib/frontmatter'
+export type { HeadingItem } from '@/lib/frontmatter'
 
 // --- Markdown-it instance --------------------------------------------------
 
@@ -249,12 +255,6 @@ function renderInlineMdc(open: Token, children: VNodeChild[]): VNodeChild {
 }
 
 // --- Heading anchors & table of contents ----------------------------------
-
-export interface HeadingItem {
-  id: string
-  text: string
-  level: number
-}
 
 // Math is stashed as `QPDMATHPLACEHOLDER<n>END` before parsing; strip it so
 // heading text (and the slugs derived from it) read cleanly.

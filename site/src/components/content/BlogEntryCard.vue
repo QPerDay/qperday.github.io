@@ -45,32 +45,3 @@ const authors = computed(() => {
     {{ t('content.not_found', { slug }) }}
   </span>
 </template>
-
-<style scoped>
-.entry-card {
-  display: block;
-}
-.entry-card__title {
-  display: block;
-  font-weight: 600;
-  line-height: 1.3;
-}
-.entry-card__description {
-  display: block;
-  color: var(--c-muted);
-  font-size: 0.9rem;
-  line-height: 1.5;
-  margin-top: var(--s1);
-}
-.entry-card__meta {
-  display: block;
-  color: var(--c-faint);
-  font-size: 0.85rem;
-  margin-top: var(--s2);
-}
-/* Unknown slug: a muted, non-interactive placeholder. */
-.entry-card--missing {
-  color: var(--c-muted);
-  font-size: 0.9rem;
-}
-</style>

@@ -21,11 +21,22 @@ function detectLocale(): 'en' | 'zh' {
 
 const messages = { en, zh }
 
+// The i18n singleton initializes deterministically with English: the module is
+// shared by the SSR/prerender entry (Node, no localStorage/navigator), and the
+// client must also render English on first paint so hydration matches the
+// prerendered HTML.  `applyDetectedLocale()` (client-only, called in App.vue's
+// onMounted) swaps to the detected locale after hydration.
 const i18n = createI18n({
   legacy: false,
-  locale: detectLocale(),
+  locale: 'en',
   fallbackLocale: 'en',
   messages,
 })
+
+// Read localStorage/navigator and apply the result to the live instance.
+// Client-only: touches browser APIs, so never call this during SSR.
+export function applyDetectedLocale(): void {
+  i18n.global.locale.value = detectLocale()
+}
 
 export default i18n

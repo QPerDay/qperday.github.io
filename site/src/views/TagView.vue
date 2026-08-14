@@ -5,6 +5,7 @@ import { useCatalog } from '@/stores/catalog'
 import { useProblemQuery } from '@/composables/useProblemQuery'
 import ProblemFilters from '@/components/ProblemFilters.vue'
 import ProblemList from '@/components/ProblemList.vue'
+import NotFoundState from '@/components/NotFoundState.vue'
 
 const props = defineProps<{ nameNormalized: string }>()
 
@@ -38,7 +39,15 @@ const { search, status, topic, dateFrom, dateTo, useFrom, useTo, results, total 
 
     <ProblemList :problems="results" />
   </section>
-  <p v-else class="empty">{{ t('catalog.tag_not_found', { name: nameNormalized }) }}</p>
+  <NotFoundState
+    v-else
+    kind="Tag"
+    attr="name"
+    :value="nameNormalized"
+    :message="t('catalog.tag_not_found', { name: nameNormalized })"
+    to="/tags"
+    :back-label="t('notfound.back_to', { target: t('nav.tags') })"
+  />
 </template>
 
 <style scoped>

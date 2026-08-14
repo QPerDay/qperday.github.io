@@ -102,7 +102,8 @@
   "notfound": {
     "title": "404 — 未找到",
     "body": "您要找的页面不存在。",
-    "back": "返回首页"
+    "back": "返回首页",
+    "back_to": "返回{target}"
   },
   "common": {
     "err_prefix": "[有误]",

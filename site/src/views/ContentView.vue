@@ -1,19 +1,25 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useEntry, useEntriesReferencingEntry } from '@/lib/content'
-import { collectProblemIds, collectHeadings } from '@/lib/mdc'
+import { useEntry, useEntriesReferencingEntry, resolveAssetUrls } from '@/lib/content'
 import { useCatalog } from '@/stores/catalog'
 import { formatDate } from '@/lib/date'
 import type { ProblemMeta } from '@/types'
-import MarkdownContent from '@/components/MarkdownContent.vue'
 import TableOfContents from '@/components/TableOfContents.vue'
 import TwikooComments from '@/components/TwikooComments.vue'
+import NotFoundState from '@/components/NotFoundState.vue'
 
 const props = defineProps<{ slug: string }>()
 
 const { t, locale } = useI18n()
-const entry = useEntry(props.slug)
+// Getters, not values: the router reuses this component instance between
+// `/blog/:slug` routes, so the hooks must re-read the prop on every change.
+const entry = useEntry(() => props.slug)
+
+// Compiled HTML carries `__QPD_ASSET__:<name>` tokens for bundled images; swap
+// them for this build's asset URLs (dev server paths in dev, hashed prod URLs
+// in production/SSR — so hydration matches the prerendered markup exactly).
+const assetHtml = computed(() => (entry.value ? resolveAssetUrls(entry.value.html) : ''))
 const catalog = useCatalog()
 
 const date = computed(() => {
@@ -31,19 +37,22 @@ const authors = computed(() => {
   return author.join(', ')
 })
 
-// Problems referenced by `:problem-card{id=…}` components in the body.
+// Problems referenced by `:problem-card{id=…}` components in the body.  The
+// reference set is precomputed at compile time (content.json), so no markdown
+// is parsed here.
 const referenced = computed<ProblemMeta[]>(() => {
   if (!entry.value) return []
-  return collectProblemIds(entry.value.body)
+  return entry.value.problemIds
     .map((id) => catalog.problem(id))
     .filter((p): p is ProblemMeta => p !== undefined)
 })
 
 // Other blog entries that reference this one via `:blog-entry-card{slug=…}`.
-const referencingEntries = useEntriesReferencingEntry(props.slug)
+const referencingEntries = useEntriesReferencingEntry(() => props.slug)
 
-// Section headings in the body, for the floating table of contents.
-const headings = computed(() => (entry.value ? collectHeadings(entry.value.body) : []))
+// Section headings in the body, for the floating table of contents.  Also
+// precomputed at compile time.
+const headings = computed(() => entry.value?.headings ?? [])
 
 // Mobile "Contents" bottom sheet.
 const tocOpen = ref(false)
@@ -90,7 +99,10 @@ function onSheetClick(e: MouseEvent) {
         </section>
       </header>
 
-      <MarkdownContent :source="entry.body" />
+      <!-- Compiled at build time; the HTML already carries its own `.md`
+           wrapper, which the global prose styles in src/assets/content.css
+           target. -->
+      <div v-html="assetHtml"></div>
 
       <hr class="entry__rule" />
 
@@ -137,7 +149,15 @@ function onSheetClick(e: MouseEvent) {
     </div>
   </div>
 
-  <p v-else class="empty">{{ t('content.not_found', { slug }) }}</p>
+  <NotFoundState
+    v-else
+    kind="Entry"
+    attr="slug"
+    :value="slug"
+    :message="t('content.not_found', { slug })"
+    to="/blog"
+    :back-label="t('notfound.back_to', { target: t('nav.blog') })"
+  />
 </template>
 
 <style scoped>

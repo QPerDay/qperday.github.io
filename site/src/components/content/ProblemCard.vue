@@ -3,7 +3,6 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCatalog } from '@/stores/catalog'
 import { formatDate } from '@/lib/date'
-import { slugify } from '@/lib/slug'
 
 // MDC component: a compact card linking to a specific problem by ID.
 //   ::problem-card{id="20260724"}   (block)  or  :problem-card{id="20260724"}
@@ -68,28 +67,20 @@ const stars = computed(() => Array.from({ length: 5 }, (_, i) => i < difficulty.
 
       <span v-if="problem.score" class="problem-card__score">{{ problem.score }} {{ t('problem.pts') }}</span> ·
 
-      <RouterLink
-        v-if="problem.topic"
-        :to="`/topics/${slugify(problem.topic)}`"
-        class="problem-card__topic"
-        @click.stop
-      >
+      <!-- Topic/tags are spans, not links: the whole card is already a link, and
+           nested <a> inside <a> is invalid HTML — the browser's parser would
+           close the card link at the first inner anchor and mangle the card. -->
+      <span v-if="problem.topic" class="problem-card__topic">
         {{ problem.topic }}
-      </RouterLink>
+      </span>
 
       <span v-if="problem.open" class="problem-card__open">{{ t('problem.status_open') }}</span>
     </div>
 
     <div v-if="problem.tags.length" class="problem-card__tags">
-      <RouterLink
-        v-for="tag in problem.tags"
-        :key="tag"
-        :to="`/tags/${slugify(tag)}`"
-        class="tag"
-        @click.stop
-      >
+      <span v-for="tag in problem.tags" :key="tag" class="tag">
         {{ tag }}
-      </RouterLink>
+      </span>
     </div>
   </RouterLink>
 
@@ -97,96 +88,3 @@ const stars = computed(() => Array.from({ length: 5 }, (_, i) => i < difficulty.
     {{ t('problem.not_found', { id }) }}
   </span>
 </template>
-
-<style scoped>
-.problem-card {
-  display: block;
-}
-.problem-card__head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--s3);
-  margin-bottom: var(--s2);
-}
-.problem-card__titles {
-  min-width: 0;
-}
-.problem-card__name {
-  display: block;
-  font-weight: 600;
-  line-height: 1.3;
-}
-.problem-card__setters {
-  display: block;
-  color: var(--c-muted);
-  font-size: 0.85rem;
-  margin-top: 0.1rem;
-}
-.problem-card__corner {
-  display: flex;
-  align-items: center;
-  gap: var(--s2);
-  flex-shrink: 0;
-}
-.problem-card__date {
-  font-family: var(--font-mono);
-  color: var(--c-faint);
-  font-size: 0.85rem;
-}
-.problem-card__warn {
-  width: 1.05em;
-  height: 1.05em;
-  color: var(--c-warn-fg);
-}
-
-.problem-card__meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--s2);
-}
-.problem-card__stars {
-  display: inline-flex;
-  color: var(--c-accent);
-  letter-spacing: 0.1em;
-}
-.problem-card__stars .off {
-  color: var(--c-border-strong);
-}
-.problem-card__score {
-  color: var(--c-muted);
-  font-size: 0.85rem;
-}
-/* Topic is a plain accent link — distinct from the tag badges. */
-.problem-card__topic {
-  color: var(--c-accent);
-  font-size: 0.9rem;
-  font-weight: 500;
-  text-decoration: none;
-}
-.problem-card__topic:hover {
-  color: var(--c-accent-strong);
-  text-decoration: underline;
-}
-.problem-card__open {
-  color: var(--c-warn-fg);
-  background: var(--c-warn-bg);
-  border-radius: var(--radius-pill);
-  padding: 0.1rem 0.6rem;
-  font-size: 0.8rem;
-}
-
-.problem-card__tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.3rem;
-  margin-top: var(--s2);
-}
-
-/* Unknown ID: a muted, non-interactive placeholder. */
-.problem-card--missing {
-  color: var(--c-muted);
-  font-size: 0.9rem;
-}
-</style>

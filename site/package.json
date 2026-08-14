@@ -7,14 +7,14 @@
   "type": "module",
   "scripts": {
     "sync": "node scripts/sync.mjs",
-    "dev": "vite",
-    "build": "run-p type-check \"build-only {@}\" --",
+    "dev": "node scripts/compile-content.mjs && vite",
+    "build": "node scripts/compile-content.mjs && pnpm type-check && vite build && vite build --ssr src/entry-server.ts --outDir dist-server && node scripts/prerender.mjs",
     "preview": "vite preview",
-    "build-only": "vite build",
     "type-check": "vue-tsc --build"
   },
   "dependencies": {
     "@embedpdf/vue-pdf-viewer": "^2.15.0",
+    "@vue/server-renderer": "^3.5.41",
     "fuse.js": "^7.5.0",
     "katex": "^0.18.4",
     "markdown-it": "^14.3.0",

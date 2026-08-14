@@ -41,8 +41,8 @@ const cards = computed(() =>
         <p class="entry__meta">
           <span v-if="e.date">{{ e.date }}</span>
           <template v-if="e.authors.length">
-            <span aria-hidden="true">·</span>
-            <span>{{ t('problem.by') }}</span>
+            <span aria-hidden="true"> · </span>
+            <span>{{ t('problem.by') + " "}}</span>
             <template v-for="(a, i) in e.authors" :key="a.to">
               <RouterLink :to="a.to" class="entry__author">{{ a.name }}</RouterLink>
               <span v-if="i < e.authors.length - 1" aria-hidden="true">, </span>

@@ -7,6 +7,7 @@ import { useEntries, entryAuthoredBy } from '@/lib/content'
 import { slugify } from '@/lib/slug'
 import ProblemFilters from '@/components/ProblemFilters.vue'
 import ProblemList from '@/components/ProblemList.vue'
+import NotFoundState from '@/components/NotFoundState.vue'
 
 const props = defineProps<{ nameNormalized: string }>()
 
@@ -118,7 +119,15 @@ const { search, status, topic, dateFrom, dateTo, useFrom, useTo, results, total 
 
     <ProblemList :problems="results" :show-setters="false" />
   </section>
-  <p v-else class="empty">{{ t('catalog.setter_not_found', { name: nameNormalized }) }}</p>
+  <NotFoundState
+    v-else
+    kind="Setter"
+    attr="name"
+    :value="nameNormalized"
+    :message="t('catalog.setter_not_found', { name: nameNormalized })"
+    to="/setters"
+    :back-label="t('notfound.back_to', { target: t('nav.setters') })"
+  />
 </template>
 
 <style scoped>

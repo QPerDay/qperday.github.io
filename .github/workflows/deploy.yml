@@ -52,14 +52,9 @@ jobs:
       - name: Build site
         working-directory: site
         # Hosted at the domain root (https://qperday.github.io/), so Vite's
-        # base is `/` (set in vite.config.ts).
+        # base is `/` (set in vite.config.ts).  The build prerenders one
+        # dist/<route>/index.html per route plus a real dist/404.html.
         run: pnpm build
-
-      # GitHub Pages cannot run a SPA server, so unmatched deep links
-      # (e.g. /problem/20260803) fall through to 404.html; serving the app
-      # there lets vue-router resolve the route client-side.
-      - name: Add SPA fallback
-        run: cp site/dist/index.html site/dist/404.html
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

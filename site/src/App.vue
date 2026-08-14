@@ -1,19 +1,30 @@
 <script setup lang="ts">
-import { watch } from 'vue'
+import { onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { applyDetectedLocale } from '@/i18n'
 import NavBar from '@/components/NavBar.vue'
 
 const { t, locale } = useI18n()
 
 // Keep <html lang> and the document title in sync with the active locale.
+// The immediate body is skipped during SSR/prerender (no `document` in Node);
+// the prerendered HTML carries the deterministic English locale instead.
 watch(
   locale,
   (l) => {
+    if (typeof document === 'undefined') return
     document.documentElement.lang = l
     document.title = t('meta.title')
   },
   { immediate: true },
 )
+
+// Apply the user's saved/browser locale after hydration.  The server-rendered
+// HTML (and the client's first paint, for hydration parity) are English; this
+// swap triggers the watcher above, which syncs <html lang> and the title.
+onMounted(() => {
+  applyDetectedLocale()
+})
 </script>
 
 <template>

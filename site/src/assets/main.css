@@ -311,3 +311,37 @@ input[type='checkbox']:disabled {
   color: var(--c-muted);
   text-align: center;
 }
+
+/* ---------- formal proof lines ---------- */
+
+/* Numbered statements typeset like a formal proof (serif, math glyphs, mono
+   numbers/values).  Shared by the 404 catch-all page and the route-level
+   not-found states (NotFoundState.vue), so they read as one design. */
+.proof {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  line-height: 1.5;
+}
+.proof__stmt {
+  margin: 0;
+}
+.proof__num {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  color: var(--c-faint);
+  margin-right: var(--s2);
+}
+.proof__math var {
+  font-style: italic;
+}
+.proof__math .upright {
+  font-style: normal;
+}
+.proof__value {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  color: var(--c-accent);
+}
