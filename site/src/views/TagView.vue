@@ -38,7 +38,7 @@ const { search, status, topic, dateFrom, dateTo, useFrom, useTo, results, total 
 
     <ProblemList :problems="results" />
   </section>
-  <p v-else>{{ t('catalog.tag_not_found', { name: nameNormalized }) }}</p>
+  <p v-else class="empty">{{ t('catalog.tag_not_found', { name: nameNormalized }) }}</p>
 </template>
 
 <style scoped>

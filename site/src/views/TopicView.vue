@@ -23,6 +23,9 @@ const { search, status, topic, dateFrom, dateTo, useFrom, useTo, results, total 
 <template>
   <section v-if="name">
     <h1>{{ name }}</h1>
+    <p v-if="catalog.topicDescriptions[name]" class="desc">
+      {{ catalog.topicDescriptions[name] }}
+    </p>
 
     <ProblemFilters
       v-model:search="search"
@@ -41,11 +44,16 @@ const { search, status, topic, dateFrom, dateTo, useFrom, useTo, results, total 
 
     <ProblemList :problems="results" />
   </section>
-  <p v-else>{{ t('catalog.topic_not_found', { name: nameNormalized }) }}</p>
+  <p v-else class="empty">{{ t('catalog.topic_not_found', { name: nameNormalized }) }}</p>
 </template>
 
 <style scoped>
 .count {
   color: var(--c-muted);
+}
+.desc {
+  color: var(--c-muted);
+  margin: var(--s2) 0 0;
+  max-width: var(--measure);
 }
 </style>

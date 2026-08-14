@@ -50,11 +50,14 @@
     "close": "Close",
     "not_found": "Problem {id} not found",
     "pdf_tooltip_question": "Click to open the problem statement",
-    "pdf_tooltip_answer": "Click to open the answer"
+    "pdf_tooltip_answer": "Click to open the answer",
+    "referenced_by": "Referenced in"
   },
   "content": {
     "author_all": "All setters",
     "not_found": "Entry {slug} not found",
+    "referenced_problems": "Referenced problems",
+    "toc": "Contents",
     "box": {
       "problem": "Problem",
       "answer": "Answer",

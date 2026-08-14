@@ -27,3 +27,21 @@ export interface ProblemQuery {
   dateFrom?: string
   dateTo?: string
 }
+
+// Topic descriptions as produced by ../export_web.py (from `\topic` lines in
+// main.tex) and consumed by the Topics catalog.
+export interface TopicMeta {
+  name: string
+  description: string
+}
+
+// Setter contacts as produced by ../export_web.py (from `\setterContact` lines
+// in main.tex) and consumed by the setter pages.
+export interface ContactMeta {
+  label: string
+  url: string
+}
+export interface SetterMeta {
+  name: string
+  contacts: ContactMeta[]
+}

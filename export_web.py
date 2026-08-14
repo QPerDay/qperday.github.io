@@ -41,6 +41,8 @@ XELATEX = shutil.which("xelatex") or "xelatex"
 
 PROBLEM_RE = re.compile(r"^\d{8}$")
 META_RE = re.compile(r"\\meta\{([^{}]+)\}\{([^{}]*)\}")
+TOPIC_RE = re.compile(r"\\topic\{([^{}]+)\}\{([^{}]*)\}")
+SETTER_CONTACT_RE = re.compile(r"\\setterContact\{([^{}]+)\}\{([^{}]+)\}\{([^{}]*)\}")
 
 FIELDS = ["name", "setter", "score", "status", "topic", "difficulty", "tags", "open", "resources"]
 
@@ -77,6 +79,43 @@ def parse_meta(pid):
     for key, value in META_RE.findall(text):
         meta[key] = value.strip()
     return meta
+
+
+def parse_topics():
+    """Topic descriptions declared via \\topic{name}{description} in main.tex."""
+    main = ROOT / "main.tex"
+    if not main.exists():
+        return []
+    text = main.read_text(encoding="utf-8")
+    topics = []
+    for name, desc in TOPIC_RE.findall(text):
+        name = name.strip()
+        if name:
+            topics.append({"name": name, "description": desc.strip()})
+    return topics
+
+
+def parse_setter_contacts():
+    """Setter contacts via \\setterContact{name}{label}{url} in main.tex.
+
+    Grouped by setter name, preserving declaration order for both setters and
+    their individual contacts.
+    """
+    main = ROOT / "main.tex"
+    if not main.exists():
+        return []
+    text = main.read_text(encoding="utf-8")
+    order = []
+    by_name = {}
+    for name, label, url in SETTER_CONTACT_RE.findall(text):
+        name = name.strip()
+        if not name:
+            continue
+        if name not in by_name:
+            by_name[name] = {"name": name, "contacts": []}
+            order.append(name)
+        by_name[name]["contacts"].append({"label": label.strip(), "url": url.strip()})
+    return [by_name[n] for n in order]
 
 
 def id_to_date(pid):
@@ -203,6 +242,14 @@ def main():
 
     (WEB / "toc.json").write_text(
         json.dumps(ids, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+
+    (WEB / "topics.json").write_text(
+        json.dumps(parse_topics(), ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+
+    (WEB / "setters.json").write_text(
+        json.dumps(parse_setter_contacts(), ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
 
     # Persist hashes only for problems that compiled (or were already valid),

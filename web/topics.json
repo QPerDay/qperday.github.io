@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Control Theory",
+    "description": "Feedback, stability, and the dynamics of systems that regulate themselves."
+  },
+  {
+    "name": "Electromagnetism",
+    "description": "Electric and magnetic fields and their interplay: forces on charges, circuits, and electromagnetic phenomena."
+  },
+  {
+    "name": "Fluid Mechanics",
+    "description": "The behavior of fluids: pressure, viscosity, and flow at rest and in motion."
+  },
+  {
+    "name": "Gravitation",
+    "description": "Newtonian gravity, orbital motion, and the dynamics of bodies moving under universal attraction."
+  },
+  {
+    "name": "Mechanics",
+    "description": "The motion of objects and the forces, energy, and momentum that govern it, from point masses on tracks to rigid-body rotation."
+  },
+  {
+    "name": "Optics",
+    "description": "The behavior of light: reflection, refraction, imaging, and how optical systems and cameras form images."
+  }
+]

@@ -1,7 +1,7 @@
 import { computed } from 'vue'
 import { defineStore } from 'pinia'
 import Fuse from 'fuse.js'
-import type { ProblemMeta, ProblemQuery } from '@/types'
+import type { ProblemMeta, ProblemQuery, TopicMeta, SetterMeta, ContactMeta } from '@/types'
 import { slugify } from '@/lib/slug'
 
 // Compile-time injection: every problem's meta.json is bundled into the app
@@ -11,6 +11,20 @@ const modules = import.meta.glob('../data/problem-*.json', {
   eager: true,
   import: 'default',
 }) as Record<string, ProblemMeta>
+
+// Topic descriptions (from \topic declarations in main.tex, via topics.json).
+const topicData = import.meta.glob('../data/topics.json', {
+  eager: true,
+  import: 'default',
+}) as Record<string, TopicMeta[]>
+const topicMetas: TopicMeta[] = Object.values(topicData)[0] ?? []
+
+// Setter contacts (from \setterContact declarations in main.tex, via setters.json).
+const setterData = import.meta.glob('../data/setters.json', {
+  eager: true,
+  import: 'default',
+}) as Record<string, SetterMeta[]>
+const setterMetas: SetterMeta[] = Object.values(setterData)[0] ?? []
 
 function loadProblems(): ProblemMeta[] {
   // Newest first: IDs are YYYYMMDD, so descending lexicographic = reverse-chronological.
@@ -46,6 +60,16 @@ export const useCatalog = defineStore('catalog', () => {
     for (const p of problems) if (p.topic) set.add(p.topic)
     return [...set].sort((a, b) => a.localeCompare(b))
   })
+
+  // topic name -> description, from the \topic registry in main.tex.
+  const topicDescriptions = computed<Record<string, string>>(() =>
+    Object.fromEntries(topicMetas.map((t) => [t.name, t.description])),
+  )
+
+  // setter name -> contact links, from the \setterContact registry in main.tex.
+  const setterContacts = computed<Record<string, ContactMeta[]>>(() =>
+    Object.fromEntries(setterMetas.map((s) => [s.name, s.contacts])),
+  )
 
   // Distinct tags across all problems, sorted, each with a problem count.
   const tags = computed(() => {
@@ -128,6 +152,8 @@ export const useCatalog = defineStore('catalog', () => {
     byId,
     setters,
     topics,
+    topicDescriptions,
+    setterContacts,
     tags,
     problem,
     problemsForSetter,

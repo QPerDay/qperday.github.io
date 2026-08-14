@@ -17,13 +17,14 @@ watch(
 </script>
 
 <template>
-  <NavBar />
+  <div class="app">
+    <NavBar />
 
-  <main class="shell">
-    <RouterView />
-  </main>
+    <main class="shell">
+      <RouterView />
+    </main>
 
-  <footer class="footer">
+    <footer class="footer">
     <p>
       {{ t('footer.copyright') }}, {{ t('footer.licensed') }}
       <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">
@@ -38,16 +39,43 @@ watch(
         {{ t('footer.source') }}
       </a>
     </p>
-  </footer>
+    </footer>
+  </div>
 </template>
 
 <style scoped>
+.app {
+  /* Full-viewport column: nav on top, main filling the middle, footer at the
+     bottom.  `dvh` tracks the real viewport height (mobile address bar), so the
+     home page never overflows vertically. */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
 .shell {
+  /* `width: 100%` is required because .shell is a flex item of the .app column:
+     without it, `margin: 0 auto` shrink-wraps the item to its content instead
+     of letting `max-width` + auto margins center it at full width. */
+  width: 100%;
   padding: var(--s6);
   max-width: var(--measure);
   margin: 0 auto;
+  /* Clip horizontal overflow (e.g. the off-screen PDF-button tooltips) so it
+     can't create a stray horizontal scrollbar.  `clip` — not `hidden` — so this
+     doesn't become a scroll container and `position: sticky` / the top-layer
+     `<dialog>` keep working. */
+  overflow-x: clip;
+  /* Grow to fill the space between nav and footer.  Also a flex column so the
+     home hero can fill it; content taller than the viewport still expands it
+     normally (no clipping). */
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
 }
 .footer {
+  flex: 0 0 auto;
+  width: 100%;
   max-width: var(--measure);
   margin: var(--s6) auto 0;
   padding: var(--s4) 1.5rem;

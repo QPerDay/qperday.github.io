@@ -40,7 +40,11 @@ const today = computed(() => catalog.problem(todayId))
 
 <style scoped>
 .hero {
-  min-height: 70vh;
+  /* Fill the available height (the app is a 100dvh flex column), so the page
+     always fits the viewport with no vertical scroll, shrinking on short
+     screens instead of overflowing. */
+  flex: 1 1 auto;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -51,7 +55,7 @@ const today = computed(() => catalog.problem(todayId))
 .equation {
   font-size: clamp(2.5rem, 8vw, 4.5rem);
   font-style: italic;
-  font-family: var(--font-serif, Georgia, 'Times New Roman', serif);
+  font-family: var(--font-serif);
   margin: 0;
 }
 .tagline {
@@ -66,25 +70,5 @@ const today = computed(() => catalog.problem(todayId))
   flex-wrap: wrap;
   justify-content: center;
 }
-.btn {
-  display: inline-block;
-  padding: var(--s3) var(--s6);
-  border-radius: var(--radius);
-  text-decoration: none;
-  font-weight: 600;
-}
-.btn--primary {
-  background: var(--c-accent);
-  color: #fff;
-}
-.btn--primary:hover {
-  background: var(--c-accent-strong);
-}
-.btn--secondary {
-  border: 1px solid var(--c-accent);
-  color: var(--c-accent);
-}
-.btn--secondary:hover {
-  background: var(--c-accent-bg);
-}
+/* Buttons come from the shared `.btn` primitives in main.css. */
 </style>

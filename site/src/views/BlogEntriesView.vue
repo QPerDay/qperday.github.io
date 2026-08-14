@@ -100,8 +100,4 @@ const cards = computed(() =>
   font-size: 0.85rem;
   margin: 0;
 }
-
-.empty {
-  color: var(--c-muted);
-}
 </style>

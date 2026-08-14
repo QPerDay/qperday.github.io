@@ -50,11 +50,14 @@
     "close": "关闭",
     "not_found": "未找到题目 {id}",
     "pdf_tooltip_question": "点击打开题目陈述",
-    "pdf_tooltip_answer": "点击打开答案"
+    "pdf_tooltip_answer": "点击打开答案",
+    "referenced_by": "被引用于"
   },
   "content": {
     "author_all": "全体命题人",
     "not_found": "未找到文章 {slug}",
+    "referenced_problems": "引用的问题",
+    "toc": "目录",
     "box": {
       "problem": "题目",
       "answer": "答案",

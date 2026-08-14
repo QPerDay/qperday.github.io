@@ -124,22 +124,32 @@ type MathToken = { html: string }
 
 let currentMath: MathToken[] = []
 
-function stashMath(src: string): string {
-  currentMath = []
-  const stash = (html: string) => {
-    const id = currentMath.length
-    currentMath.push({ html })
+// The one place the `$` / `$$` delimiters are recognised.  Raw LaTeX
+// (`\left\langle`, `\begin{array}`, `\\`) must never reach markdown-it-mdc's
+// inline parser — it catastrophically backtracks on it — so both the renderer
+// and the reference collector strip math to placeholders first.
+type MathCapture = { tex: string; display: boolean }
+
+function stashMathDelimiters(src: string): { stashed: string; captures: MathCapture[] } {
+  const captures: MathCapture[] = []
+  const stash = (display: boolean) => (_m: string, tex: string) => {
+    const id = captures.length
+    captures.push({ tex: tex.trim(), display })
     return `QPDMATHPLACEHOLDER${id}END`
   }
   // Display math $$...$$ first (so its $$ don't clash with inline $).
-  src = src.replace(/\$\$([\s\S]+?)\$\$/g, (_m, tex: string) =>
-    stash(katex.renderToString(tex.trim(), { displayMode: true, throwOnError: false })),
-  )
+  const s1 = src.replace(/\$\$([\s\S]+?)\$\$/g, stash(true))
   // Inline math $...$ (single-dollar; skips $$ which are already stashed).
-  src = src.replace(/\$([^\n$]+?)\$/g, (_m, tex: string) =>
-    stash(katex.renderToString(tex.trim(), { throwOnError: false })),
-  )
-  return src
+  const s2 = s1.replace(/\$([^\n$]+?)\$/g, stash(false))
+  return { stashed: s2, captures }
+}
+
+function stashMath(src: string): string {
+  const { stashed, captures } = stashMathDelimiters(src)
+  currentMath = captures.map((c) => ({
+    html: katex.renderToString(c.tex, { displayMode: c.display, throwOnError: false }),
+  }))
+  return stashed
 }
 
 const MATH_RE = /QPDMATHPLACEHOLDER(\d+)END/g
@@ -238,6 +248,53 @@ function renderInlineMdc(open: Token, children: VNodeChild[]): VNodeChild {
   return h(comp, props, { default: () => children })
 }
 
+// --- Heading anchors & table of contents ----------------------------------
+
+export interface HeadingItem {
+  id: string
+  text: string
+  level: number
+}
+
+// Math is stashed as `QPDMATHPLACEHOLDER<n>END` before parsing; strip it so
+// heading text (and the slugs derived from it) read cleanly.
+const HEADING_MATH_RE = /QPDMATHPLACEHOLDER\d+END/g
+
+// Concatenated plain text of an inline token's children (used for headings).
+function headingText(inline: Token): string {
+  let out = ''
+  const walk = (ts: Token[]) => {
+    for (const t of ts) {
+      if (t.type === 'text' || t.type === 'code_inline') out += t.content
+      if (t.children) walk(t.children)
+    }
+  }
+  walk(inline.children ?? [])
+  return out.replace(HEADING_MATH_RE, '')
+}
+
+// GitHub-style slug: lowercase; runs of non-alphanumerics collapse to `-`.
+function slugifyHeading(text: string): string {
+  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+}
+
+// Per-render id allocator: deduplicates repeated slugs as `foo`, `foo-1`, …
+type HeadingIdAllocator = (text: string) => string
+
+function makeHeadingIdAllocator(): HeadingIdAllocator {
+  const counts = new Map<string, number>()
+  return (text: string) => {
+    const base = slugifyHeading(text) || 'section'
+    const n = counts.get(base) ?? 0
+    counts.set(base, n + 1)
+    return n === 0 ? base : `${base}-${n}`
+  }
+}
+
+// The allocator for the current render (reset per render) so anchor ids stay
+// stable and unique within a document.
+let currentHeadingId: HeadingIdAllocator = makeHeadingIdAllocator()
+
 // --- Token walkers ---------------------------------------------------------
 
 // Render a single block-level token (advancing `idx` past it and its subtree).
@@ -257,8 +314,12 @@ function renderOne(tokens: Token[], idx: { i: number }): VNodeChild[] {
       return [renderCodeBlock(t)]
     case 'hr':
       return [h('hr')]
-    case 'heading_open':
-      return [h(t.tag, {}, renderBlockLevel(tokens, idx))]
+    case 'heading_open': {
+      // Peek at the inline token that follows to derive a stable anchor id.
+      const inline = tokens[idx.i]
+      const text = inline && inline.type === 'inline' ? headingText(inline) : ''
+      return [h(t.tag, { id: currentHeadingId(text) }, renderBlockLevel(tokens, idx))]
+    }
     case 'paragraph_open':
       return [h('p', {}, renderBlockLevel(tokens, idx))]
     case 'bullet_list_open':
@@ -400,6 +461,7 @@ function renderInlineLevel(children: Token[], idx: { i: number }): VNodeChild[] 
 // Shiki code highlighting must await the shared highlighter.
 export async function renderMarkdownToVNodes(source: string): Promise<VNodeChild[]> {
   const stashed = stashMath(source)
+  currentHeadingId = makeHeadingIdAllocator()
   const tokens = md.parse(stashed, {})
   await highlightCodeBlocks(tokens)
   const idx = { i: 0 }
@@ -407,4 +469,61 @@ export async function renderMarkdownToVNodes(source: string): Promise<VNodeChild
   currentMath = []
   currentCodeHtml = []
   return nodes
+}
+
+// --- Reference collection ---------------------------------------------------
+
+// Walk the same markdown-it token tree the renderer walks and collect every
+// problem ID referenced by a `:problem-card{id=…}` / `::problem-card{id=…}`
+// component, in document order, de-duplicated.  Used to surface "this blog
+// entry references these problems" and its reverse index.
+export function collectProblemIds(source: string): string[] {
+  // Parse the *stashed* source (math → placeholders) through the same
+  // markdown-it-mdc instance the renderer uses — no hand-rolled parsing.
+  const tokens = md.parse(stashMathDelimiters(source).stashed, {})
+  const ids: string[] = []
+  const seen = new Set<string>()
+
+  const walk = (ts: Token[]) => {
+    for (const t of ts) {
+      if (
+        (t.type === 'mdc_block_shorthand' ||
+          t.type === 'mdc_block_open' ||
+          t.type === 'mdc_inline_component') &&
+        normalizeName(t.tag) === 'problemcard'
+      ) {
+        const id = t.attrGet('id')
+        if (id && !seen.has(id)) {
+          seen.add(id)
+          ids.push(id)
+        }
+      }
+      if (t.children) walk(t.children)
+    }
+  }
+
+  walk(tokens)
+  return ids
+}
+
+// Collect the document's headings (h2 and deeper) with their stable anchor
+// ids, for a table of contents.  Walks the same stashed token stream the
+// renderer walks, so ids here match the ones stamped onto the rendered
+// headings exactly.
+export function collectHeadings(source: string): HeadingItem[] {
+  const tokens = md.parse(stashMathDelimiters(source).stashed, {})
+  const allocate = makeHeadingIdAllocator()
+  const headings: HeadingItem[] = []
+  for (let i = 0; i < tokens.length; i++) {
+    const t = tokens[i]!
+    if (t.type !== 'heading_open') continue
+    const level = Number(t.tag.slice(1))
+    const inline = tokens[i + 1]
+    const text = inline && inline.type === 'inline' ? headingText(inline) : ''
+    // Allocate an id for *every* heading (matching the renderer), but only
+    // surface h2+ in the TOC.
+    const id = allocate(text)
+    if (level >= 2) headings.push({ id, text, level })
+  }
+  return headings
 }

@@ -55,11 +55,6 @@ withDefaults(defineProps<{ showTopic?: boolean }>(), { showTopic: true })
 .filters input[type='search'] {
   flex: 1;
   min-width: 12rem;
-  padding: 0.4rem 0.6rem;
-}
-.filters input[type='date'],
-.filters select {
-  padding: 0.4rem 0.6rem;
 }
 .range {
   display: inline-flex;
@@ -70,10 +65,5 @@ withDefaults(defineProps<{ showTopic?: boolean }>(), { showTopic: true })
   color: var(--c-muted);
   font-weight: 600;
   font-size: 0.9rem;
-}
-.range input[type='date']:disabled {
-  color: var(--c-faint);
-  background: var(--c-border);
-  cursor: not-allowed;
 }
 </style>

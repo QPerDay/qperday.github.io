@@ -50,6 +50,15 @@ export default defineComponent({
   font-size: 1.05rem;
   margin: var(--s4) 0 var(--s2);
 }
+/* Anchor jumps clear the sticky navbar so headings aren't hidden under it. */
+.md :deep(h1),
+.md :deep(h2),
+.md :deep(h3),
+.md :deep(h4),
+.md :deep(h5),
+.md :deep(h6) {
+  scroll-margin-top: 5rem;
+}
 .md :deep(p) {
   margin: var(--s4) 0;
 }
@@ -67,7 +76,10 @@ export default defineComponent({
   border-left: 3px solid var(--c-border);
   color: var(--c-muted);
 }
-.md :deep(a) {
+/* Style prose links, but not component-styled badges (`.tag`) — those carry
+   their own colour and hover state (see main.css).  Without this, the scoped
+   `.md a` rule (specificity 0,2,1) would override `.tag:hover`'s white text. */
+.md :deep(a:not(.tag)) {
   color: var(--c-accent);
 }
 .md :deep(code) {

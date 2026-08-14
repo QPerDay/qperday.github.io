@@ -1,0 +1,19 @@
+[
+  {
+    "name": "Sean Li",
+    "contacts": [
+      {
+        "label": "Email",
+        "url": "mailto:makabaka1880@outlook.com"
+      },
+      {
+        "label": "GitHub",
+        "url": "https://github.com/makabaka1880"
+      },
+      {
+        "label": "HomePage",
+        "url": "https://blog.makabaka1880.xyz"
+      }
+    ]
+  }
+]

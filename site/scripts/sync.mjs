@@ -43,4 +43,16 @@ for (const id of toc) {
   n++
 }
 
+// Topic descriptions (from \topic declarations in main.tex) -> src/data/topics.json.
+const topicsSrc = join(web, 'topics.json')
+if (existsSync(topicsSrc)) {
+  writeFileSync(join(dataDir, 'topics.json'), readFileSync(topicsSrc, 'utf8'))
+}
+
+// Setter contacts (from \setterContact declarations in main.tex).
+const settersSrc = join(web, 'setters.json')
+if (existsSync(settersSrc)) {
+  writeFileSync(join(dataDir, 'setters.json'), readFileSync(settersSrc, 'utf8'))
+}
+
 console.log(`Synced ${n} problems -> src/data/ (JSON) + public/data/ (PDFs)`)

@@ -244,6 +244,24 @@
   \ifdefstring{\qpd@tmpfield}{setter}{\qpd@recordsetter@toc{#2}}{}%
 }
 
+% Topic registry: \topic{name}{description} — one line per topic, declared in
+% the booklet preamble (main.tex).  A pure registry (no visible output);
+% export_web.py reads these lines from main.tex to build the site's Topics
+% catalog.  Keep descriptions brace-free and LaTeX-markup-free.
+\newcommand{\topic}[2]{%
+  \expandafter\gdef\csname qpd@topic@#1\endcsname{#2}%
+}
+
+% Setter contact registry: \setterContact{name}{label}{url} — one line per
+% contact method, declared in the booklet preamble (main.tex).  Optional, and a
+% setter may have several.  `label` is a short display name (Email, GitHub,
+% HomePage, …); `url` is `mailto:…` for email or a direct URL otherwise.  Pure
+% registry (no visible output); export_web.py reads these lines from main.tex
+% to build the site's setter contacts.  Keep text brace-/backslash-free.
+\newcommand{\setterContact}[3]{%
+  \expandafter\gdef\csname qpd@settercontact@#1@#2\endcsname{#3}%
+}
+
 % Display prefix derived from the status field.
 % status=err -> "[ERR] "; otherwise empty.  Generalisable to a tag table.
 \newcommand{\qpd@statusprefix}[1]{%

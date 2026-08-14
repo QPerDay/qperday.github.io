@@ -23,6 +23,9 @@ const rows = computed(() =>
       <li v-for="r in rows" :key="r.name">
         <RouterLink :to="`/topics/${r.slug}`" class="card row">
           <span class="name">{{ r.name }}</span>
+          <span v-if="catalog.topicDescriptions[r.name]" class="desc">
+            {{ catalog.topicDescriptions[r.name] }}
+          </span>
           <span class="count">{{ t('catalog.problem_count', { count: r.count }) }}</span>
         </RouterLink>
       </li>
@@ -31,8 +34,28 @@ const rows = computed(() =>
 </template>
 
 <style scoped>
+/* Name + description on the left, count anchored to the right. */
 .row {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    'name count'
+    'desc count';
+  column-gap: var(--s4);
+  row-gap: var(--s1);
+  align-items: center;
+}
+.name {
+  grid-area: name;
+}
+.desc {
+  grid-area: desc;
+  color: var(--c-muted);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+.count {
+  grid-area: count;
+  color: var(--c-muted);
 }
 </style>

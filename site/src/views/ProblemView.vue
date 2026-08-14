@@ -3,6 +3,7 @@ import { ref, computed, onBeforeUnmount, defineAsyncComponent, h } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCatalog } from '@/stores/catalog'
 import { slugify } from '@/lib/slug'
+import { useEntriesReferencingProblem } from '@/lib/content'
 import TwikooComments from '@/components/TwikooComments.vue'
 
 // Lazy-load the PDF viewer so its heavy bundle (viewer JS + pdfium WASM) is
@@ -22,6 +23,9 @@ const { t } = useI18n()
 
 const catalog = useCatalog()
 const problem = computed(() => catalog.problem(props.id))
+
+// Blog entries (active locale) that reference this problem via a problem card.
+const referencing = useEntriesReferencingProblem(props.id)
 
 // Which document is shown in the dialog.  `null` = closed.
 const view = ref<'statement' | 'answer' | null>(null)
@@ -136,6 +140,15 @@ const pdfUrl = (which: 'statement' | 'answer') =>
             <TwikooComments />
         </div>
 
+        <section v-if="referencing.length" class="references">
+            <h2 class="references__title">{{ t('problem.referenced_by') }}</h2>
+            <ul class="references__list">
+                <li v-for="e in referencing" :key="e.slug">
+                    <RouterLink :to="`/blog/${e.slug}`">{{ e.title }}</RouterLink>
+                </li>
+            </ul>
+        </section>
+
         <dialog ref="dialog" class="modal"
             :aria-label="view === 'statement' ? t('problem.problem_statement') : t('problem.answer')" @close="close"
             @click.self="close">
@@ -154,7 +167,7 @@ const pdfUrl = (which: 'statement' | 'answer') =>
         </dialog>
     </article>
 
-    <p v-else>{{ t('problem.not_found', { id }) }}</p>
+    <p v-else class="empty">{{ t('problem.not_found', { id }) }}</p>
 </template>
 
 <style scoped>
@@ -268,6 +281,32 @@ const pdfUrl = (which: 'statement' | 'answer') =>
     flex: 1 1 100%;
 }
 
+/* Blog entries referencing this problem. */
+.references {
+    order: 4;
+    flex: 1 1 100%;
+    margin-top: var(--s4);
+}
+.references__title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--c-muted);
+    margin: 0 0 var(--s2);
+}
+.references__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s2);
+}
+.references__list a {
+    color: var(--c-accent);
+}
+
 /* Custom tooltip — appears immediately on hover/focus (native `title` has a
    ~1s delay and is suppressed on some setups).  Driven by data-tip. */
 .action::after {
@@ -283,14 +322,19 @@ const pdfUrl = (which: 'statement' | 'answer') =>
     padding: 0.35rem 0.6rem;
     border-radius: var(--radius);
     opacity: 0;
+    /* `visibility: hidden` (not just `opacity: 0`) so the off-screen tooltip
+       doesn't contribute to scrollable overflow and create a stray horizontal
+       scrollbar when the toolbar sits flush against the right edge. */
+    visibility: hidden;
     pointer-events: none;
-    transition: opacity 0.12s ease, transform 0.12s ease;
+    transition: opacity 0.12s ease, transform 0.12s ease, visibility 0.12s;
     z-index: 10;
 }
 
 .action:hover::after,
 .action:focus-visible::after {
     opacity: 1;
+    visibility: visible;
     transform: translateX(-50%) translateY(0);
 }
 
@@ -399,7 +443,8 @@ const pdfUrl = (which: 'statement' | 'answer') =>
     .head,
     .meta-table,
     .toolbar,
-    .comments {
+    .comments,
+    .references {
         flex: 1 1 100%;
     }
 
@@ -418,6 +463,10 @@ const pdfUrl = (which: 'statement' | 'answer') =>
 
     .comments {
         order: 3;
+    }
+
+    .references {
+        order: 4;
     }
 
     .toolbar .action {
