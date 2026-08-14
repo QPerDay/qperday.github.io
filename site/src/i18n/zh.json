@@ -1,0 +1,96 @@
+{
+  "meta": {
+    "title": "每日一题 · QPD 物理题集"
+  },
+  "nav": {
+    "problems": "题目",
+    "topics": "主题",
+    "tags": "标签",
+    "setters": "命题人",
+    "blog": "文章",
+    "about": "关于",
+    "toggle": "切换导航"
+  },
+  "hero": {
+    "tagline": "每日一题 - QPD 物理题集",
+    "today": "今日一题",
+    "catalog": "目录"
+  },
+  "footer": {
+    "copyright": "© 2026 每日一题 命题小组 (SSBS '28)",
+    "licensed": "根据",
+    "cc": "CC BY 4.0",
+    "license_text": "许可授权",
+    "get_in_touch": "请致信",
+    "if_reuse": "如果您重用题目，请署名作者并联系我们。"
+  },
+  "about": {
+    "title": "关于每日一题",
+    "using_site": "使用本站",
+    "philosophy": "理念",
+    "people": "团队",
+    "license": "许可"
+  },
+  "problem": {
+    "by": "由",
+    "date": "日期",
+    "score": "分数",
+    "pts": "分",
+    "topic": "主题",
+    "difficulty": "难度",
+    "status": "状态",
+    "status_erroneous": "有误",
+    "status_open": "开放 — 答案尚未公布",
+    "tags": "标签",
+    "resources": "参考资料",
+    "problem_statement": "题目陈述",
+    "answer": "答案",
+    "reference_answer": "参考答案",
+    "close": "关闭",
+    "not_found": "未找到题目 {id}",
+    "pdf_tooltip_question": "点击打开题目陈述",
+    "pdf_tooltip_answer": "点击打开答案"
+  },
+  "content": {
+    "author_all": "全体命题人",
+    "not_found": "未找到文章 {slug}",
+    "box": {
+      "problem": "题目",
+      "answer": "答案",
+      "warning": "警告",
+      "info": "信息",
+      "error": "错误",
+      "theorem": "定理"
+    }
+  },
+  "blog": {
+    "empty": "暂无文章。"
+  },
+  "catalog": {
+    "title": "目录",
+    "problems": "道题",
+    "problem": "道题",
+    "not_found": "未找到",
+    "search_placeholder": "搜索名称 / 主题 / 标签…",
+    "status_all": "全部状态",
+    "status_ok": "仅正确",
+    "status_err": "仅有误",
+    "topic_all": "全部主题",
+    "from": "从",
+    "to": "至",
+    "results_count": "共 {count} 道题，已显示 {shown} 道",
+    "problem_count": "{count} 道题",
+    "setter_not_found": "未找到命题人 {name}",
+    "tag_not_found": "未找到标签 {name}",
+    "topic_not_found": "未找到主题 {name}"
+  },
+  "notfound": {
+    "title": "404 — 未找到",
+    "body": "您要找的页面不存在。",
+    "back": "返回首页"
+  },
+  "common": {
+    "err_prefix": "[有误]",
+    "language": "语言"
+  }
+}

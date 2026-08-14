@@ -83,12 +83,31 @@ export const useCatalog = defineStore('catalog', () => {
 
   // Client-side querying over the bundled catalog.  Search is fuzzy (Fuse.js);
   // the remaining filters are exact and combine with search via AND.
-  function query(q: ProblemQuery): ProblemMeta[] {
+  //
+  // An optional `scope` restricts the search to a pre-filtered set (e.g. all
+  // problems by one setter).  Within a scope, fuzzy matching over the whole
+  // catalog would be wrong, so a scoped search falls back to substring
+  // matching over name/topic/tags.
+  function query(q: ProblemQuery, scope?: ProblemMeta[]): ProblemMeta[] {
     const term = q.search?.trim() ?? ''
 
-    // Start from the full list (chronological), or the fuzzy matches (ranked
-    // best-first) when a search term is present.
-    const base = term ? fuse.search(term).map((r) => r.item) : problems
+    let base: ProblemMeta[]
+    if (term) {
+      if (scope) {
+        const t = term.toLowerCase()
+        base = scope.filter(
+          (p) =>
+            p.name.toLowerCase().includes(t) ||
+            p.topic.toLowerCase().includes(t) ||
+            p.tags.some((tag) => tag.toLowerCase().includes(t)),
+        )
+      } else {
+        // Full catalog: fuzzy matches, ranked best-first.
+        base = fuse.search(term).map((r) => r.item)
+      }
+    } else {
+      base = scope ?? problems
+    }
 
     return base.filter((p) => {
       if (q.status === 'ok' && p.status === 'err') return false

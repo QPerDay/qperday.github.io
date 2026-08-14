@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useCatalog } from '@/stores/catalog'
 
 const catalog = useCatalog()
+const { t } = useI18n()
 
 // Today's date as a `YYYYMMDD` problem ID (local time).
 const todayId = (() => {
@@ -20,14 +22,17 @@ const today = computed(() => catalog.problem(todayId))
 <template>
   <section class="hero">
     <p class="equation">∂<sub>t</sub> Q = 1</p>
-    <p class="tagline">A curated collection of physics problems by the QPD problem-setting group.</p>
+    <p class="tagline">{{ t('hero.tagline') }}</p>
 
     <div class="cta">
       <RouterLink v-if="today" :to="`/problem/${today.id}`" class="btn btn--primary">
-        Today's Problem
+        {{ t('hero.today') }}
       </RouterLink>
       <RouterLink to="/problem" class="btn" :class="today ? 'btn--secondary' : 'btn--primary'">
-        Catalog
+        {{ t('hero.catalog') }}
+      </RouterLink>
+      <RouterLink to="/blog/about" class="btn btn--secondary">
+        {{ t('nav.about') }}
       </RouterLink>
     </div>
   </section>

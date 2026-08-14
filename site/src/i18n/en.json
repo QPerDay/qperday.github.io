@@ -1,0 +1,96 @@
+{
+  "meta": {
+    "title": "QPD — Question Per Day"
+  },
+  "nav": {
+    "problems": "Problems",
+    "topics": "Topics",
+    "tags": "Tags",
+    "setters": "Setters",
+    "blog": "Blog",
+    "about": "About",
+    "toggle": "Toggle navigation"
+  },
+  "hero": {
+    "tagline": "A curated collection of physics problems by the QPD problem-setting group.",
+    "today": "Today's Problem",
+    "catalog": "Catalog"
+  },
+  "footer": {
+    "copyright": "© 2026 QPD problem-setting group (SSBS '28)",
+    "licensed": "licensed under",
+    "cc": "CC BY 4.0",
+    "license_text": "please credit the authors and",
+    "get_in_touch": "get in touch",
+    "if_reuse": "if you reuse a problem."
+  },
+  "about": {
+    "title": "About QPD",
+    "using_site": "Using this site",
+    "philosophy": "Philosophy",
+    "people": "The people",
+    "license": "License"
+  },
+  "problem": {
+    "by": "by",
+    "date": "Date",
+    "score": "Score",
+    "pts": "pts",
+    "topic": "Topic",
+    "difficulty": "Difficulty",
+    "status": "Status",
+    "status_erroneous": "erroneous",
+    "status_open": "open — answer not yet released",
+    "tags": "Tags",
+    "resources": "Resources",
+    "problem_statement": "Problem statement",
+    "answer": "Answer",
+    "reference_answer": "Reference Answer",
+    "close": "Close",
+    "not_found": "Problem {id} not found",
+    "pdf_tooltip_question": "Click to open the problem statement",
+    "pdf_tooltip_answer": "Click to open the answer"
+  },
+  "content": {
+    "author_all": "All setters",
+    "not_found": "Entry {slug} not found",
+    "box": {
+      "problem": "Problem",
+      "answer": "Answer",
+      "warning": "Warning",
+      "info": "Info",
+      "error": "Error",
+      "theorem": "Theorem"
+    }
+  },
+  "blog": {
+    "empty": "No entries yet."
+  },
+  "catalog": {
+    "title": "Catalog",
+    "problems": "problems",
+    "problem": "problem",
+    "not_found": "not found",
+    "search_placeholder": "Search name / topic / tags…",
+    "status_all": "All statuses",
+    "status_ok": "OK only",
+    "status_err": "ERR only",
+    "topic_all": "All topics",
+    "from": "From",
+    "to": "To",
+    "results_count": "{shown} of {count} problem | {shown} of {count} problems",
+    "problem_count": "{count} problem | {count} problems",
+    "setter_not_found": "Setter {name} not found",
+    "tag_not_found": "Tag {name} not found",
+    "topic_not_found": "Topic {name} not found"
+  },
+  "notfound": {
+    "title": "404 — Not found",
+    "body": "The page you're looking for doesn't exist.",
+    "back": "Back to home"
+  },
+  "common": {
+    "err_prefix": "[ERR]",
+    "language": "Language"
+  }
+}

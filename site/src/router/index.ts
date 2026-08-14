@@ -9,9 +9,15 @@ const router = createRouter({
       component: () => import('@/views/IndexView.vue'),
     },
     {
-      path: '/about',
-      name: 'about',
-      component: () => import('@/views/AboutView.vue'),
+      path: '/blog',
+      name: 'blog',
+      component: () => import('@/views/BlogEntriesView.vue'),
+    },
+    {
+      path: '/blog/:slug',
+      name: 'blog-entry',
+      component: () => import('@/views/ContentView.vue'),
+      props: true,
     },
     {
       path: '/problem',

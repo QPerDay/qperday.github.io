@@ -1,4 +1,9 @@
-# About QPD
+---
+title: About QPD
+description: What QPD is, how the site works, and the people behind the problems.
+date: 2026-08-14
+author: all
+---
 
 **QPD** — *Question Per Day* — is a curated collection of physics problems,
 published one day at a time.
@@ -60,3 +65,8 @@ The **code and tooling** are MIT-licensed. The **problem content** is licensed
 under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — you may
 share and adapt problems with attribution. As a courtesy, we'd be glad to
 hear from you if you reuse a problem.
+
+::problem-box{title="Example problem box"}
+This is a test of the MDC component pipeline.  It renders a `ProblemBox`
+with a `title` prop and this text in its default slot.
+::
