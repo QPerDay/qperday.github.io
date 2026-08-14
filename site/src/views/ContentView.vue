@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useEntry } from '@/lib/content'
+import { useEntry, useEntriesReferencingEntry } from '@/lib/content'
 import { collectProblemIds, collectHeadings } from '@/lib/mdc'
 import { useCatalog } from '@/stores/catalog'
 import { formatDate } from '@/lib/date'
@@ -39,6 +39,9 @@ const referenced = computed<ProblemMeta[]>(() => {
     .filter((p): p is ProblemMeta => p !== undefined)
 })
 
+// Other blog entries that reference this one via `:blog-entry-card{slug=…}`.
+const referencingEntries = useEntriesReferencingEntry(props.slug)
+
 // Section headings in the body, for the floating table of contents.
 const headings = computed(() => (entry.value ? collectHeadings(entry.value.body) : []))
 
@@ -73,6 +76,15 @@ function onSheetClick(e: MouseEvent) {
                 <span class="entry__problem-date">{{ formatDate(p.id, locale) }}</span>
                 <span class="entry__problem-name">{{ p.name }}</span>
               </RouterLink>
+            </li>
+          </ul>
+        </section>
+
+        <section v-if="referencingEntries.length" class="entry__backlinks">
+          <h2 class="entry__backlinks-title">{{ t('content.referenced_in') }}</h2>
+          <ul class="entry__backlinks-list">
+            <li v-for="e in referencingEntries" :key="e.slug">
+              <RouterLink :to="`/blog/${e.slug}`">{{ e.title }}</RouterLink>
             </li>
           </ul>
         </section>
@@ -325,5 +337,29 @@ function onSheetClick(e: MouseEvent) {
 }
 .entry__problem-name {
   font-weight: 500;
+}
+
+/* Blog entries referencing this one (backlinks). */
+.entry__backlinks {
+  margin-top: var(--s4);
+}
+.entry__backlinks-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+  margin: 0 0 var(--s2);
+}
+.entry__backlinks-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+.entry__backlinks-list a {
+  color: var(--c-accent);
 }
 </style>

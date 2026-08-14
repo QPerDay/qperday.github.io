@@ -473,15 +473,16 @@ export async function renderMarkdownToVNodes(source: string): Promise<VNodeChild
 
 // --- Reference collection ---------------------------------------------------
 
-// Walk the same markdown-it token tree the renderer walks and collect every
-// problem ID referenced by a `:problem-card{id=…}` / `::problem-card{id=…}`
-// component, in document order, de-duplicated.  Used to surface "this blog
-// entry references these problems" and its reverse index.
-export function collectProblemIds(source: string): string[] {
+// Walk the same markdown-it token tree the renderer walks and collect the
+// value of `attr` from every occurrence of an MDC component (inline or block),
+// in document order, de-duplicated.  This is the one place references between
+// content entries are discovered, so both problem and blog-entry backlinks
+// share it.
+function collectComponentAttrs(source: string, component: string, attr: string): string[] {
   // Parse the *stashed* source (math → placeholders) through the same
   // markdown-it-mdc instance the renderer uses — no hand-rolled parsing.
   const tokens = md.parse(stashMathDelimiters(source).stashed, {})
-  const ids: string[] = []
+  const values: string[] = []
   const seen = new Set<string>()
 
   const walk = (ts: Token[]) => {
@@ -490,12 +491,12 @@ export function collectProblemIds(source: string): string[] {
         (t.type === 'mdc_block_shorthand' ||
           t.type === 'mdc_block_open' ||
           t.type === 'mdc_inline_component') &&
-        normalizeName(t.tag) === 'problemcard'
+        normalizeName(t.tag) === component
       ) {
-        const id = t.attrGet('id')
-        if (id && !seen.has(id)) {
-          seen.add(id)
-          ids.push(id)
+        const value = t.attrGet(attr)
+        if (value && !seen.has(value)) {
+          seen.add(value)
+          values.push(value)
         }
       }
       if (t.children) walk(t.children)
@@ -503,7 +504,17 @@ export function collectProblemIds(source: string): string[] {
   }
 
   walk(tokens)
-  return ids
+  return values
+}
+
+// Problem IDs referenced by `:problem-card{id=…}` / `::problem-card{id=…}`.
+export function collectProblemIds(source: string): string[] {
+  return collectComponentAttrs(source, 'problemcard', 'id')
+}
+
+// Blog-entry slugs referenced by `:blog-entry-card{slug=…}` (etc.).
+export function collectBlogEntrySlugs(source: string): string[] {
+  return collectComponentAttrs(source, 'blogentrycard', 'slug')
 }
 
 // Collect the document's headings (h2 and deeper) with their stable anchor

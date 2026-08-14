@@ -1,7 +1,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { parse as parseYaml } from 'yaml'
-import { collectProblemIds } from '@/lib/mdc'
+import { collectProblemIds, collectBlogEntrySlugs } from '@/lib/mdc'
 
 // Content entry system.  Content lives under `src/content/{locale}/*.md`, each
 // file carrying frontmatter (title, date, author) followed by an MDC body.
@@ -119,6 +119,15 @@ export function useEntriesReferencingProblem(id: string) {
   const { locale } = useI18n()
   return computed(() =>
     listEntries(locale.value).filter((e) => collectProblemIds(e.body).includes(id)),
+  )
+}
+
+// Blog entries (in the active locale) that reference a given blog entry via a
+// `:blog-entry-card{slug=…}` component.  Reactive to locale changes.
+export function useEntriesReferencingEntry(slug: string) {
+  const { locale } = useI18n()
+  return computed(() =>
+    listEntries(locale.value).filter((e) => collectBlogEntrySlugs(e.body).includes(slug)),
   )
 }
 

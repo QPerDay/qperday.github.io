@@ -60,6 +60,7 @@
     "author_all": "All setters",
     "not_found": "Entry {slug} not found",
     "referenced_problems": "Referenced problems",
+    "referenced_in": "Referenced in",
     "toc": "Contents",
     "comments": "Comments",
     "top": "Top",
