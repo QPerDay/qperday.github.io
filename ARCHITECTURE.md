@@ -32,6 +32,7 @@ finally into the site's compiled bundle.
 | `site/` | Vue 3 + Vite + Pinia static site (SSG: content precompilation + route prerendering) |
 | `site/scripts/compile-content.mjs` | Compiles `src/content/**/*.md` → `src/generated/content.json` (HTML + reference metadata) |
 | `site/scripts/prerender.mjs` | Renders every route via the SSR entry → `dist/<route>/index.html` + `dist/404.html` |
+| `site/scripts/generate-llms.mjs` | Emits `dist/llms.txt` + `dist/llms-full.txt` from the same metadata (llmstxt.org convention) |
 
 ---
 
@@ -290,6 +291,16 @@ boxes, foldable, cards, KaTeX) — scoped component styles cannot reach
    catch-all route) with the app HTML injected at `<!--app-html-->` and the
    `<title>` swapped.
 
+### Phase 3 — llms.txt
+
+`scripts/generate-llms.mjs` (the last step of `pnpm build`) writes
+`dist/llms.txt` (a concise, LLM-readable index: catalog links, every problem,
+topic, tag, setter, and blog entry) and `dist/llms-full.txt` (the complete
+problem index with PDF links plus the full markdown of every blog article),
+following the llmstxt.org convention. It derives everything from
+`src/data/*.json` and `src/generated/content.json` — the same inputs the site
+renders — so the index never drifts from the deployed pages.
+
 ### Client hydration
 
 `src/entry-client.ts` creates a `createSSRApp` and mounts after
@@ -362,7 +373,7 @@ QPD/
 │   ├── src/content/{en,zh}/   # blog entries (.md)
 │   ├── src/generated/         # compiled content.json (gitignored)
 │   ├── src/components/content/  # MDC components
-│   └── scripts/{sync,compile-content,prerender}.mjs
+│   └── scripts/{sync,compile-content,prerender,generate-llms}.mjs
 ├── README.md / EXTENDING.md / ARCHITECTURE.md
 └── .github/workflows/deploy.yml
 ```

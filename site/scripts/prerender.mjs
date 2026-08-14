@@ -9,9 +9,9 @@
 // Route enumeration is filesystem + JSON (no import.meta.glob in Node):
 //   - static routes: /, /blog, /problem, /topics, /tags, /setters
 //   - /problem/{id}        from ../web/toc.json
-//   - /topics/{slug}       from ../web/topics.json
+//   - /topics/{slug}       distinct topics across src/data/problem-*.json
 //   - /tags/{slug}         distinct tags across src/data/problem-*.json
-//   - /setters/{slug}      from ../web/setters.json
+//   - /setters/{slug}      distinct setters across src/data/problem-*.json
 //   - /blog/{slug}         union of src/content/{en,zh}/*.md
 import { readFileSync, readdirSync, writeFileSync, mkdirSync } from 'node:fs'
 import path from 'node:path'
@@ -34,14 +34,22 @@ function loadJson(file) {
 // --- Route enumeration -----------------------------------------------------
 
 const problemIds = loadJson(path.join(repoWebDir, 'toc.json'))
-const topics = loadJson(path.join(repoWebDir, 'topics.json')).map((t) => t.name)
-const setters = loadJson(path.join(repoWebDir, 'setters.json')).map((s) => s.name)
 
-// Distinct tags across all problem metadata.
+// Distinct topics, setters, and tags across all problem metadata.  Mirrors
+// src/stores/catalog.ts: the catalog is derived from problem metadata, not
+// from topics.json/setters.json, which only supply descriptions/contacts.
+// Deriving from metadata guarantees every enumerated /topics/:slug and
+// /setters/:slug page actually resolves (setters.json lists only the setters
+// with contact info, which is a subset).
 const dataDir = path.join(siteRoot, 'src', 'data')
+const topics = new Set()
+const setters = new Set()
 const tags = new Set()
 for (const file of readdirSync(dataDir).filter((f) => /^problem-.*\.json$/.test(f))) {
-  for (const tag of loadJson(path.join(dataDir, file)).tags ?? []) tags.add(tag)
+  const p = loadJson(path.join(dataDir, file))
+  if (p.topic) topics.add(p.topic)
+  for (const s of p.setter ?? []) if (s) setters.add(s)
+  for (const tag of p.tags ?? []) tags.add(tag)
 }
 
 // Blog slugs: union of both locale content dirs.
@@ -61,9 +69,9 @@ const routes = [
   '/tags',
   '/setters',
   ...problemIds.map((id) => `/problem/${id}`),
-  ...topics.map((name) => `/topics/${slugify(name)}`),
+  ...[...topics].map((name) => `/topics/${slugify(name)}`),
   ...[...tags].map((tag) => `/tags/${slugify(tag)}`),
-  ...setters.map((name) => `/setters/${slugify(name)}`),
+  ...[...setters].map((name) => `/setters/${slugify(name)}`),
   ...[...blogSlugs].map((slug) => `/blog/${slug}`),
 ]
 

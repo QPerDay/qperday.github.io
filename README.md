@@ -68,6 +68,9 @@ rather than recompiling the TeX, so it never needs a TeX installation.
 3. `vite build` (client) + `vite build --ssr` (server entry),
 4. `node scripts/prerender.mjs` — renders **one `dist/<route>/index.html` per
    route** plus a real `dist/404.html`, via Vue SSR.
+5. `node scripts/generate-llms.mjs` — emits **`dist/llms.txt`** and
+   **`dist/llms-full.txt`** (an LLM-readable index + full content) from the
+   same metadata the site renders, so they stay in sync with the pages.
 
 `src/generated/` is **gitignored** — it is a pure build artifact, regenerated
 from scratch by every `pnpm build` (and by `pnpm dev`, so Markdown edits are
