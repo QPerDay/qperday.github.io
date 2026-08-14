@@ -33,6 +33,11 @@ watch(
       <a href="mailto:sophiec2010@163.com" target="_blank" rel="noopener">{{ t('footer.get_in_touch') }}</a>
       {{ t('footer.if_reuse') }}
     </p>
+    <p>
+      <a href="https://github.com/QPerDay/qperday.github.io" target="_blank" rel="noopener">
+        {{ t('footer.source') }}
+      </a>
+    </p>
   </footer>
 </template>
 
@@ -52,6 +57,9 @@ watch(
 }
 .footer p {
   margin: 0;
+}
+.footer p + p {
+  margin-top: var(--s2);
 }
 .footer a {
   color: var(--c-accent);

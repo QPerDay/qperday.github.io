@@ -22,7 +22,8 @@
     "cc": "CC BY 4.0",
     "license_text": "许可授权",
     "get_in_touch": "请致信",
-    "if_reuse": "如果您重用题目，请署名作者并联系我们。"
+    "if_reuse": "如果您重用题目，请署名作者并联系我们。",
+    "source": "在 GitHub 上查看源码"
   },
   "about": {
     "title": "关于每日一题",
