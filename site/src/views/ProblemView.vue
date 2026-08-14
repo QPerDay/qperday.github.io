@@ -1,10 +1,20 @@
 <script setup lang="ts">
-import { ref, computed, onBeforeUnmount } from 'vue'
+import { ref, computed, onBeforeUnmount, defineAsyncComponent, h } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCatalog } from '@/stores/catalog'
 import { slugify } from '@/lib/slug'
 import TwikooComments from '@/components/TwikooComments.vue'
-import { PDFViewer } from '@embedpdf/vue-pdf-viewer'
+
+// Lazy-load the PDF viewer so its heavy bundle (viewer JS + pdfium WASM) is
+// only fetched when the modal is first opened, not on every problem-page visit.
+const PDFViewer = defineAsyncComponent({
+    loader: () => import('@embedpdf/vue-pdf-viewer').then((m) => m.PDFViewer),
+    loadingComponent: {
+        render() {
+            return h('div', { class: 'pdf-loading' })
+        },
+    },
+})
 
 const props = defineProps<{ id: string }>()
 
@@ -353,6 +363,30 @@ const pdfUrl = (which: 'statement' | 'answer') =>
 
 .pdf-wrap :deep(embedpdf-container) {
     height: 100%;
+}
+
+/* Spinner shown while the viewer chunk + WASM are first loading. */
+.pdf-loading {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pdf-loading::after {
+    content: '';
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 3px solid var(--c-border);
+    border-top-color: var(--c-accent);
+    border-radius: 50%;
+    animation: pdf-spin 0.8s linear infinite;
+}
+
+@keyframes pdf-spin {
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* Mobile: stack the blocks and turn the two actions into full-width, vertical
