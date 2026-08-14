@@ -81,6 +81,7 @@
     "problem": "道题",
     "not_found": "未找到",
     "search_placeholder": "搜索名称 / 主题 / 标签…",
+    "filters": "筛选",
     "status_all": "全部状态",
     "status_ok": "仅正确",
     "status_err": "仅有误",

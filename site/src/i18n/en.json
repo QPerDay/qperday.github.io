@@ -81,6 +81,7 @@
     "problem": "problem",
     "not_found": "not found",
     "search_placeholder": "Search name / topic / tags…",
+    "filters": "Filters",
     "status_all": "All statuses",
     "status_ok": "OK only",
     "status_err": "ERR only",
