@@ -134,4 +134,12 @@ export default defineComponent({
   overflow-x: auto;
   overflow-y: hidden;
 }
+/* Inside a callout box, flush the first/last child against the box padding so
+   the body doesn't carry an extra top/bottom gap on top of it. */
+.md :deep(.box__body > :first-child) {
+  margin-top: 0;
+}
+.md :deep(.box__body > :last-child) {
+  margin-bottom: 0;
+}
 </style>

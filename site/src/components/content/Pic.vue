@@ -9,8 +9,10 @@ const props = withDefaults(
     src: string
     caption?: string
     alt?: string
+    /** Image width as any CSS length/percentage (defaults to 80%). */
+    width?: string
   }>(),
-  { caption: '', alt: '' },
+  { caption: '', alt: '', width: '80%' },
 )
 
 const assets = import.meta.glob('../../assets/*', {
@@ -31,7 +33,7 @@ const url = computed(() => {
 
 <template>
   <figure class="pic">
-    <img :src="url" :alt="alt || caption || ''" loading="lazy" />
+    <img :src="url" :alt="alt || caption || ''" :style="{ width }" loading="lazy" />
     <figcaption v-if="caption" class="pic__caption">{{ caption }}</figcaption>
   </figure>
 </template>
@@ -42,9 +44,7 @@ const url = computed(() => {
   text-align: center;
 }
 .pic img {
-  max-width: 100%;
   height: auto;
-  border: 1px solid var(--c-border);
   border-radius: var(--radius);
 }
 .pic__caption {

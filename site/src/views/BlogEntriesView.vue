@@ -2,23 +2,26 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useEntries } from '@/lib/content'
+import { slugify } from '@/lib/slug'
 
 const { t, locale } = useI18n()
 const entries = useEntries()
 
-// Resolve each entry into display fields (localized author + readable date).
+// Resolve each entry into display fields: localized date + per-author setter
+// links (an "all setters" attribution links to the setter index instead).
 const cards = computed(() =>
   entries.value.map((e) => {
-    let author = ''
-    if (e.author === 'all') author = t('content.author_all')
-    else if (e.author.length) author = e.author.join(', ')
+    const authors =
+      e.author === 'all'
+        ? [{ name: t('content.author_all'), to: '/setters' }]
+        : e.author.map((name) => ({ name, to: `/setters/${slugify(name)}` }))
 
     const d = new Date(e.date)
     const date = Number.isNaN(d.getTime())
       ? e.date
       : d.toLocaleDateString(locale.value, { year: 'numeric', month: 'long', day: 'numeric' })
 
-    return { ...e, author, date }
+    return { slug: e.slug, title: e.title, description: e.description, date, authors }
   }),
 )
 </script>
@@ -30,17 +33,23 @@ const cards = computed(() =>
     </header>
 
     <div class="entries">
-      <RouterLink v-for="e in cards" :key="e.slug" :to="`/blog/${e.slug}`" class="entry">
-        <h2 class="entry__title">{{ e.title }}</h2>
+      <article v-for="e in cards" :key="e.slug" class="entry">
+        <h2 class="entry__title">
+          <RouterLink :to="`/blog/${e.slug}`">{{ e.title }}</RouterLink>
+        </h2>
         <p v-if="e.description" class="entry__desc">{{ e.description }}</p>
         <p class="entry__meta">
           <span v-if="e.date">{{ e.date }}</span>
-          <template v-if="e.author">
+          <template v-if="e.authors.length">
             <span aria-hidden="true">·</span>
-            <span>{{ t('problem.by') }} {{ e.author }}</span>
+            <span>{{ t('problem.by') }}</span>
+            <template v-for="(a, i) in e.authors" :key="a.to">
+              <RouterLink :to="a.to" class="entry__author">{{ a.name }}</RouterLink>
+              <span v-if="i < e.authors.length - 1" aria-hidden="true">, </span>
+            </template>
           </template>
         </p>
-      </RouterLink>
+      </article>
     </div>
 
     <p v-if="cards.length === 0" class="empty">{{ t('blog.empty') }}</p>
@@ -85,6 +94,10 @@ const cards = computed(() =>
   margin: 0 0 var(--s2);
   color: var(--c-accent-strong);
 }
+.entry__title a {
+  color: inherit;
+  text-decoration: none;
+}
 .entry:hover .entry__title {
   color: var(--c-accent);
 }
@@ -99,5 +112,13 @@ const cards = computed(() =>
   color: var(--c-faint);
   font-size: 0.85rem;
   margin: 0;
+}
+.entry__author {
+  color: var(--c-accent);
+  text-decoration: none;
+}
+.entry__author:hover {
+  color: var(--c-accent-strong);
+  text-decoration: underline;
 }
 </style>

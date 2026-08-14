@@ -70,6 +70,9 @@
       "info": "Info",
       "error": "Error",
       "theorem": "Theorem"
+    },
+    "foldable": {
+      "default": "Details"
     }
   },
   "blog": {

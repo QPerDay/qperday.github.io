@@ -70,6 +70,9 @@
       "info": "信息",
       "error": "错误",
       "theorem": "定理"
+    },
+    "foldable": {
+      "default": "详情"
     }
   },
   "blog": {
