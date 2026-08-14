@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCatalog } from '@/stores/catalog'
 import { slugify } from '@/lib/slug'
@@ -20,11 +20,33 @@ const dialog = ref<HTMLDialogElement | null>(null)
 function open(which: 'statement' | 'answer') {
     view.value = which
     dialog.value?.showModal()
+    setBodyScrollLock(true)
 }
 function close() {
     dialog.value?.close()
     view.value = null
+    setBodyScrollLock(false)
 }
+
+// `showModal()` makes the background inert to pointer events, but the page
+// behind can still be scrolled.  Lock body/html scrolling and pad the gap left
+// by the now-hidden scrollbar so the content doesn't jump.
+function setBodyScrollLock(lock: boolean) {
+    if (lock) {
+        const gap = window.innerWidth - document.documentElement.clientWidth
+        document.documentElement.style.overflow = 'hidden'
+        document.body.style.overflow = 'hidden'
+        document.body.style.paddingRight = `${gap}px`
+    } else {
+        document.documentElement.style.overflow = ''
+        document.body.style.overflow = ''
+        document.body.style.paddingRight = ''
+    }
+}
+
+// If the component unmounts with the dialog open (e.g. navigation), release
+// the lock so the next page isn't stuck unscrollable.
+onBeforeUnmount(() => setBodyScrollLock(false))
 
 const pdfUrl = (which: 'statement' | 'answer') =>
     `${import.meta.env.BASE_URL}data/${props.id}/${which}.pdf`
