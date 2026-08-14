@@ -121,3 +121,10 @@ export function useEntriesReferencingProblem(id: string) {
     listEntries(locale.value).filter((e) => collectProblemIds(e.body).includes(id)),
   )
 }
+
+// True when `author` co-authored the entry.  An entry authored by "all setters"
+// is attributed to every setter.
+export function entryAuthoredBy(entry: ContentEntry, author: string): boolean {
+  if (entry.author === 'all') return true
+  return entry.author.includes(author)
+}

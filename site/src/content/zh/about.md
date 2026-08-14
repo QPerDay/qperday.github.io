@@ -51,8 +51,3 @@ QPD 最初是由 SSBS '28 年级一群充满热情的学生发起的小项目。
 **代码与工具** 采用 MIT 许可。**题目内容** 采用
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) 许可 —— 你可以在署名
 的前提下分享和改编题目。如果你重用了某道题，我们也很乐意收到你的来信。
-
-::problem-box{title="示例题目框"}
-这是对 MDC 组件管道的测试。它会渲染一个带 `title` 属性的 `ProblemBox`，
-并把这段文字放进默认插槽。
-::

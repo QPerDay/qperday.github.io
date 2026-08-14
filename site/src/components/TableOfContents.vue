@@ -27,6 +27,9 @@ function update() {
     const el = document.getElementById(h.id)
     if (el && el.getBoundingClientRect().top <= READ_TOP) current = h.id
   }
+  // The comments section is the last "heading" in the document.
+  const commentsEl = document.getElementById('comments')
+  if (commentsEl && commentsEl.getBoundingClientRect().top <= READ_TOP) current = 'comments'
   activeId.value = current
 }
 function onScroll() {
@@ -45,7 +48,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <nav v-if="headings.length" class="toc" :aria-label="t('content.toc')">
+  <nav class="toc" :aria-label="t('content.toc')">
     <p class="toc__title">{{ t('content.toc') }}</p>
     <ul class="toc__list">
       <li
@@ -60,7 +63,32 @@ onBeforeUnmount(() => {
           :href="`#${h.id}`"
         >{{ h.text }}</a>
       </li>
+
+      <li class="toc__item">
+        <a
+          class="toc__link"
+          :class="{ 'is-active': activeId === 'comments' }"
+          href="#comments"
+        >{{ t('content.comments') }}</a>
+      </li>
     </ul>
+
+    <a class="toc__top" href="#top">
+      <svg
+        class="toc__top-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M12 19V5" />
+        <path d="m5 12 7-7 7 7" />
+      </svg>
+      <span>{{ t('content.top') }}</span>
+    </a>
   </nav>
 </template>
 
@@ -107,5 +135,25 @@ onBeforeUnmount(() => {
 .toc__item--sub .toc__link {
   padding-left: var(--s4);
   font-size: 0.8rem;
+}
+/* "Back to top" sits below the list, separated and muted. */
+.toc__top {
+  display: flex;
+  align-items: center;
+  gap: var(--s1);
+  margin-top: var(--s3);
+  padding-top: var(--s2);
+  border-top: 1px solid var(--c-border);
+  color: var(--c-muted);
+  font-size: 0.8rem;
+  text-decoration: none;
+}
+.toc__top:hover {
+  color: var(--c-accent-strong);
+}
+.toc__top-icon {
+  width: 0.9em;
+  height: 0.9em;
+  flex: 0 0 auto;
 }
 </style>

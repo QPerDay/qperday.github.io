@@ -53,11 +53,16 @@
     "pdf_tooltip_answer": "Click to open the answer",
     "referenced_by": "Referenced in"
   },
+  "setter": {
+    "blog_entries_count": "1 blog entry | {count} blog entries"
+  },
   "content": {
     "author_all": "All setters",
     "not_found": "Entry {slug} not found",
     "referenced_problems": "Referenced problems",
     "toc": "Contents",
+    "comments": "Comments",
+    "top": "Top",
     "box": {
       "problem": "Problem",
       "answer": "Answer",
@@ -85,6 +90,7 @@
     "results_count": "{shown} of {count} problem | {shown} of {count} problems",
     "problem_count": "{count} problem | {count} problems",
     "setter_not_found": "Setter {name} not found",
+    "blog_entries": "Blog entries",
     "tag_not_found": "Tag {name} not found",
     "topic_not_found": "Topic {name} not found"
   },

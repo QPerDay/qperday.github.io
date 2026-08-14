@@ -53,11 +53,16 @@
     "pdf_tooltip_answer": "点击打开答案",
     "referenced_by": "被引用于"
   },
+  "setter": {
+    "blog_entries_count": "{count} 篇博客文章"
+  },
   "content": {
     "author_all": "全体命题人",
     "not_found": "未找到文章 {slug}",
     "referenced_problems": "引用的问题",
     "toc": "目录",
+    "comments": "评论",
+    "top": "顶部",
     "box": {
       "problem": "题目",
       "answer": "答案",
@@ -85,6 +90,7 @@
     "results_count": "共 {count} 道题，已显示 {shown} 道",
     "problem_count": "{count} 道题",
     "setter_not_found": "未找到命题人 {name}",
+    "blog_entries": "博客文章",
     "tag_not_found": "未找到标签 {name}",
     "topic_not_found": "未找到主题 {name}"
   },

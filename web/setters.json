@@ -15,5 +15,23 @@
         "url": "https://blog.makabaka1880.xyz"
       }
     ]
+  },
+  {
+    "name": "Sophie Chen",
+    "contacts": [
+      {
+        "label": "Email",
+        "url": "mailto:sophiec2010@163.com"
+      }
+    ]
+  },
+  {
+    "name": "CollegeBoard",
+    "contacts": [
+      {
+        "label": "HomePage",
+        "url": "https://www.collegeboard.org"
+      }
+    ]
   }
 ]

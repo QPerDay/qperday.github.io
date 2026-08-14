@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useEntry } from '@/lib/content'
 import { collectProblemIds, collectHeadings } from '@/lib/mdc'
@@ -41,11 +41,19 @@ const referenced = computed<ProblemMeta[]>(() => {
 
 // Section headings in the body, for the floating table of contents.
 const headings = computed(() => (entry.value ? collectHeadings(entry.value.body) : []))
+
+// Mobile "Contents" bottom sheet.
+const tocOpen = ref(false)
+
+function onSheetClick(e: MouseEvent) {
+  const target = e.target as HTMLElement
+  if (target.closest('a')) tocOpen.value = false
+}
 </script>
 
 <template>
   <div v-if="entry" class="entry-page">
-    <article class="entry">
+    <article class="entry" id="top">
       <header class="entry__head">
         <p v-if="entry.description" class="entry__description">{{ entry.description }}</p>
         <h1 class="entry__title">{{ entry.title }}</h1>
@@ -72,12 +80,49 @@ const headings = computed(() => (entry.value ? collectHeadings(entry.value.body)
 
       <MarkdownContent :source="entry.body" />
 
-      <TwikooComments :path="`/blog/${slug}`" />
+      <hr class="entry__rule" />
+
+      <section id="comments" class="entry__comments">
+        <TwikooComments :path="`/blog/${slug}`" />
+      </section>
     </article>
 
     <aside class="entry-toc">
       <TableOfContents :headings="headings" />
     </aside>
+
+    <button class="toc-fab" type="button" :aria-expanded="tocOpen" @click="tocOpen = true">
+      <svg
+        class="toc-fab__icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M3 6h.01" />
+        <path d="M3 12h.01" />
+        <path d="M3 18h.01" />
+        <path d="M8 6h13" />
+        <path d="M8 12h13" />
+        <path d="M8 18h13" />
+      </svg>
+      <span>{{ t('content.toc') }}</span>
+    </button>
+
+    <div v-if="tocOpen" class="toc-scrim" @click="tocOpen = false"></div>
+
+    <div v-if="tocOpen" class="toc-sheet" role="dialog" aria-modal="true">
+      <button
+        class="toc-sheet__close"
+        type="button"
+        :aria-label="t('problem.close')"
+        @click="tocOpen = false"
+      >×</button>
+      <TableOfContents :headings="headings" @click="onSheetClick" />
+    </div>
   </div>
 
   <p v-else class="empty">{{ t('content.not_found', { slug }) }}</p>
@@ -98,8 +143,99 @@ const headings = computed(() => (entry.value ? collectHeadings(entry.value.body)
   padding: var(--s6) 0;
   line-height: 1.7;
 }
+/* Separator between the article body and the comments thread. */
+.entry__rule {
+  border: none;
+  border-top: 1px solid var(--c-border);
+  margin: var(--s6) 0;
+}
+/* Anchor target for the TOC's "Comments" link — clears the sticky navbar. */
+.entry__comments {
+  scroll-margin-top: 5rem;
+}
 .entry-toc {
   display: none;
+}
+
+/* Mobile table of contents — a floating "Contents" button that opens a bottom
+   sheet.  Replaced by the sticky rail on wide screens. */
+.toc-fab {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  position: fixed;
+  right: var(--s4);
+  bottom: var(--s4);
+  z-index: 60;
+  padding: var(--s2) var(--s4);
+  background: var(--c-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.toc-fab:hover {
+  background: var(--c-accent-strong);
+}
+.toc-fab__icon {
+  width: 1em;
+  height: 1em;
+}
+.toc-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: rgba(0, 0, 0, 0.4);
+  animation: toc-fade 0.2s ease;
+}
+.toc-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 71;
+  max-height: 70vh;
+  overflow-y: auto;
+  padding: var(--s4);
+  padding-bottom: calc(var(--s4) + env(safe-area-inset-bottom));
+  background: #fff;
+  border-top: 1px solid var(--c-border);
+  border-radius: var(--radius) var(--radius) 0 0;
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.12);
+  animation: toc-rise 0.25s ease;
+}
+.toc-sheet__close {
+  position: absolute;
+  top: var(--s2);
+  right: var(--s2);
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  color: var(--c-muted);
+  font-size: 1.25rem;
+  cursor: pointer;
+  border-radius: var(--radius);
+}
+.toc-sheet__close:hover {
+  background: var(--c-accent-bg);
+  color: var(--c-accent-strong);
+}
+@keyframes toc-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes toc-rise {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
 }
 
 /* Wide screens: a sticky right rail that floats alongside the text. */
@@ -112,6 +248,9 @@ const headings = computed(() => (entry.value ? collectHeadings(entry.value.body)
     position: sticky;
     /* Clears the sticky navbar (~3.5rem) plus a small gap. */
     top: 5rem;
+  }
+  .toc-fab {
+    display: none;
   }
 }
 .entry__head {
