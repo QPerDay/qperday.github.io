@@ -7,8 +7,8 @@
   "type": "module",
   "scripts": {
     "sync": "node scripts/sync.mjs",
-    "dev": "node scripts/compile-content.mjs && node scripts/commit-info.mjs && vite",
-    "build": "node scripts/compile-content.mjs && node scripts/commit-info.mjs && pnpm type-check && vite build && vite build --ssr src/entry-server.ts --outDir dist-server && node scripts/prerender.mjs && node scripts/generate-llms.mjs",
+    "dev": "node scripts/commit-info.mjs && node scripts/compile-content.mjs && vite",
+    "build": "node scripts/commit-info.mjs && node scripts/compile-content.mjs && pnpm type-check && vite build && vite build --ssr src/entry-server.ts --outDir dist-server && node scripts/prerender.mjs && node scripts/generate-llms.mjs",
     "preview": "vite preview",
     "type-check": "vue-tsc --build"
   },
