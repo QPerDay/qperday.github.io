@@ -68,6 +68,7 @@ const routes = [
   '/topics',
   '/tags',
   '/setters',
+  '/dev',
   ...problemIds.map((id) => `/problem/${id}`),
   ...[...topics].map((name) => `/topics/${slugify(name)}`),
   ...[...tags].map((tag) => `/tags/${slugify(tag)}`),

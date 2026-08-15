@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCatalog } from '@/stores/catalog'
+import LatestCommitBadge from '@/components/LatestCommitBadge.vue'
 
 const catalog = useCatalog()
 const { t } = useI18n()
@@ -35,6 +36,8 @@ const today = computed(() => catalog.problem(todayId))
         {{ t('nav.about') }}
       </RouterLink>
     </div>
+
+    <LatestCommitBadge />
   </section>
 </template>
 

@@ -9,12 +9,59 @@
     "setters": "Setters",
     "blog": "Blog",
     "about": "About",
+    "dev": "Dev",
     "toggle": "Toggle navigation"
   },
   "hero": {
     "tagline": "A curated collection of physics problems by the QPD problem-setting group.",
     "today": "Today's Problem",
     "catalog": "Catalog"
+  },
+  "badge": {
+    "latestCommit": "latest commit"
+  },
+  "dev": {
+    "title": "Dev",
+    "description": "How this site is built, who maintains it, and what changed recently.",
+    "about": {
+      "title": "About this site",
+      "body": "QPD — Question Per Day — is a curated collection of physics problems. This site is its statically generated front-end: every route is prerendered to plain HTML at build time, so it serves static files and runs no backend."
+    },
+    "commit": {
+      "title": "Latest commit",
+      "hash": "Commit",
+      "message": "Message",
+      "date": "Date",
+      "author": "Author",
+      "view": "View commit on GitHub",
+      "unavailable": "Commit metadata is unavailable."
+    },
+    "contact": {
+      "title": "Contact the developer",
+      "email": "Email",
+      "github": "GitHub"
+    },
+    "architecture": {
+      "title": "Architecture",
+      "source": {
+        "label": "One source, three targets",
+        "body": "Each problem is a single YYYYMMDD.tex file with its metadata declared inline as key/value pairs. The same source renders three ways: a standalone PDF, a booklet PDF, and this website."
+      },
+      "build": {
+        "label": "Static build",
+        "body": "A Vue 3 app compiled ahead of time. The build precompiles markdown content to HTML, prerenders every route to dist/<route>/index.html, and emits an llms.txt index — no runtime server."
+      },
+      "data": {
+        "label": "Data flow",
+        "body": "Problem metadata is bundled into the client at compile time (import.meta.glob); only the PDFs are fetched lazily from /data/{id}/."
+      }
+    },
+    "extend": {
+      "title": "Extending",
+      "body": "Want to add a metadata field or dig into the toolchain? The full notes live in the repository.",
+      "architecture": "ARCHITECTURE.md",
+      "extending": "EXTENDING.md"
+    }
   },
   "footer": {
     "copyright": "© 2026 QPD problem-setting group (SSBS '28)",

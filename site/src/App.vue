@@ -49,6 +49,8 @@ onMounted(() => {
       <a href="https://github.com/QPerDay/qperday.github.io" target="_blank" rel="noopener">
         {{ t('footer.source') }}
       </a>
+      <span aria-hidden="true"> · </span>
+      <RouterLink to="/dev">{{ t('nav.dev') }}</RouterLink>
     </p>
     </footer>
   </div>

@@ -9,12 +9,59 @@
     "setters": "命题人",
     "blog": "文章",
     "about": "关于",
+    "dev": "开发",
     "toggle": "切换导航"
   },
   "hero": {
     "tagline": "每日一题 - QPD 物理题集",
     "today": "今日一题",
     "catalog": "目录"
+  },
+  "badge": {
+    "latestCommit": "最新提交"
+  },
+  "dev": {
+    "title": "开发",
+    "description": "本站如何构建、由谁维护，以及最近的改动。",
+    "about": {
+      "title": "关于本站",
+      "body": "QPD（每日一题）是一个精选的物理题集。本站是其静态生成的前端：所有路由在构建时预渲染为纯 HTML，只提供静态文件、不运行后端。"
+    },
+    "commit": {
+      "title": "最新提交",
+      "hash": "提交",
+      "message": "信息",
+      "date": "日期",
+      "author": "作者",
+      "view": "在 GitHub 上查看提交",
+      "unavailable": "提交信息不可用。"
+    },
+    "contact": {
+      "title": "联系开发者",
+      "email": "邮箱",
+      "github": "GitHub"
+    },
+    "architecture": {
+      "title": "架构",
+      "source": {
+        "label": "一份源文件，三种输出",
+        "body": "每道题是一个 YYYYMMDD.tex 文件，其元数据以键值对形式内联声明。同一份源文件有三种渲染：单题 PDF、合订本 PDF，以及本站。"
+      },
+      "build": {
+        "label": "静态构建",
+        "body": "这是一个预先编译的 Vue 3 应用。构建过程将 Markdown 内容预编译为 HTML，把每个路由预渲染为 dist/<route>/index.html，并生成 llms.txt 索引——无需运行时服务器。"
+      },
+      "data": {
+        "label": "数据流",
+        "body": "题目元数据在编译期打包进客户端（import.meta.glob）；只有 PDF 在运行时按需从 /data/{id}/ 拉取。"
+      }
+    },
+    "extend": {
+      "title": "扩展",
+      "body": "想新增元数据字段或深入了解工具链？完整说明见仓库。",
+      "architecture": "ARCHITECTURE.md",
+      "extending": "EXTENDING.md"
+    }
   },
   "footer": {
     "copyright": "© 2026 每日一题 命题小组 (SSBS '28)",

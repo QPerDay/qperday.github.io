@@ -68,6 +68,11 @@ export const routes: RouteRecordRaw[] = [
     props: true,
   },
   {
+    path: '/dev',
+    name: 'dev',
+    component: () => import('@/views/DevView.vue'),
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     component: () => import('@/views/NotFoundView.vue'),
