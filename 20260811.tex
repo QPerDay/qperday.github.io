@@ -1,7 +1,7 @@
 \input qpd-bootstrap
 
 \begin{problem}{20260811}
-  \meta{name}{Vector Triangles and Their Simple Applications}
+  \meta{name}{矢量三角形及其简单应用}
   \meta{setter}{Ryan Huang, Sophie Chen}
   \meta{score}{7}
   \meta{topic}{Mechanics}
@@ -9,82 +9,70 @@
   \meta{tags}{mechanics, kinematics, projectile motion}
 
     
-\emph{The vector triangle is a practical and common tool in physics, yet it barely appears in AP examinations.  What follows is a brief introduction, a worked example, and a set of problems for the reader to explore.}
+\subsection*{Introduction}
+\emph{矢量三角形作为一个实用且常见的物理学工具，在 AP 考试中几乎没有 出现，故接下来对矢量三角形进行简单介绍，给予一个例子，并提供一些问题以供大家学习。}
 
 \subsection*{Concept and Example}
 
-Consider the following scenario.  A point mass $m$ is launched from the ground at an angle $\theta$; its initial velocity $\arr{v}_{0}$ is the leftmost vector in Figure~1.  Throughout the motion a constant downward acceleration of magnitude $g$ acts on the body --- that is the vector on the right of the $+$ sign in the figure.  At landing the velocity is the vector to the right of the $=$ sign.  The whole evolution can therefore be synthesised into the triangle shown on the right.
+考虑如下的情形：将一个质点 $m$ 从地面上以角度 $\theta$ 抛出，其初始速度 vector 如下图最左边向量所示。随后我们对这个质点运动过程中的速度变化 加以分析，发现有一个加速度为 $g$ 的竖直向下的量一直作用在该物体上，即下图加号右边所示的向量。最终我们发现质点落地时的速度矢量如等号右边所示。于是我们可以把整个运动过程合成，用右边的三角形来表示:
 
 \begin{center}
     \begin{minipage}{0.85\textwidth}
     \centering
     \begin{tikzpicture}[scale=1]
-      % -- v0 (launch) --
-      \draw[->,very thick] (0,0) -- (2,1.8)
-        node[midway,above left] {$\arr{v}_{0}$};
-      % -- gt (straight down from tip of v0) --
-      \draw[->,very thick] (2,1.8) -- (2,-1.8)
-        node[midway,right] {$\arr{g}t$};
-      % -- v (final, tip-to-tail from origin) --
-      \draw[->,very thick] (0,0) -- (2,-1.8)
-        node[midway,below left] {$\arr{v}$};
-      % -- label --
-    
-      \node at (4.8,0) {$\arr{v} = \arr{v}_{0} + \arr{g}t$};
+      % -- v0 (launch): up-right arrow --
+      \draw[->, very thick] (-7,-0.9) -- (-5,0.9);
+      \node at (-4,0) {\Large $+$};
+      % -- gt (gravity): straight-down arrow --
+      \draw[->, very thick] (-3,0.9) -- (-3,-0.9);
+      \node at (-2,0) {\Large $=$};
+      % -- v (landing): down-right arrow --
+      \draw[->, very thick] (-1,0.9) -- (1,-0.9);
+      \node at (2.5,0) {\Large $\Rightarrow$};
+      % -- the vector triangle --
+      \draw[->, very thick] (4,0) -- (6,1.8);
+      \draw[->, very thick] (6,1.8) -- (6,-1.8);
+      \draw[->, very thick] (4,0) -- (6,-1.8);
     \end{tikzpicture}
     \par\smallskip
-    \textit{Fig.~1 --- The vector triangle for ground-to-ground projectile motion.  $\arr{v}_{0}$ and $\arr{g}t$ have fixed directions; $\arr{v}$ and the flight time $t$ vary with $\theta$.}
+    \textit{Fig.~1 --- 矢量与矢量三角形}
     \end{minipage}
 \end{center}
 
-This construction leads to a classic question: at what angle $\theta$ must one launch the mass to maximise the horizontal range?  Intuition (and elementary kinematics plus trigonometry) gives $45^{\circ}$.  Here we offer a different approach --- using the \emph{area} of the vector triangle.
+然而，你会发现我们不能把一个速度和一个加速度加在一起，因为他 们的量纲（单位）不一样，那么我们该怎么办呢？考虑如下运动学公式
 
-Integrating velocity gives displacement, so let us examine the area of the triangle formed by $\arr{v}_{0}$, $\arr{g}t$, and $\arr{v}$.  A short calculation (left to the reader in Q1 below) shows that
-\[
-  S = \tfrac{1}{2}\,gx, \tag{3}
-\]
-where $x$ is the horizontal range.  Notice that the area depends \emph{only} on $x$; once we express $S$ in terms of the launch parameters, maximising $x$ reduces to maximising the area of a triangle with two sides of fixed length.
+\[ v = v_0 + a t \]
 
-Indeed, in our triangle one side ($\arr{g}t$) changes with the flight time, but another view fixes $\arr{v}_{0}$ and varies the angle $\alpha$ between $\arr{v}_{0}$ and $\arr{v}$.  A second calculation (Q2) yields
-\[
-  S = \tfrac{1}{2}\,v_{0}^{2}\sin 2\theta
-    = -\tfrac{1}{2}\,v_{0}^{2}\sin 2\alpha. \tag{4}
-\]
-From either expression the maximum occurs at $\theta = 45^{\circ}$, recovering the familiar result through a purely geometric route.
+这给予了我们一些线索，因为实际上这个公式是对向量适用的，而非仅仅标量。故我们发现，可以设加在物体上的竖直向下速度为 $g t$，此时就可以相加了。所以我们最后得知
+
+\[ \vec v = \vec v_0 + \arr g t \]
+
+最后这个情形产生了一个经典的疑问：我该以哪个角度 $\theta$ 抛出，才能 使得这个质点水平飞行距离最远呢？在这个情形下，我们的直觉给出了 $45^\circ$ 的答案，通过纯粹的运动学方程与三角函数值域的求解也可以证明这一 点，但此处我们提供一种新的办法：使用矢量三角形计算
+
+对速度积分可以得到位移，故我们试图考虑这个矢量三角形的面积。通 过计算 (请读者在下面的问题中自行证明) 得知这个矢量三角形的面积是 $S = \frac 1 2 g x$，其中 $x$ 是物体的水平位移。此时我们发现，这个矢量三角形的面 积实际上只与物体水平位移的值有关，而与其他值无关，所以我们可以利 用这一点，通过求三角形面积的最值来解出水平位移最大值时对应的其他参数。
+
+由于我们发现， 这个三角形中一边 $g t$，一边 $v_0$ 是固定的，而两个速度向量之间的夹角 $\alpha$、时间、与末速是变量，故通过计算我们得知，这个三角
+形的面积还可以表示为 $S = \frac 1 2 v^2_0 \sin {2 \theta}$，或 $S = - \frac 1 2 v^2_0 \sin {2 \alpha}$。
+最终容易解得，这个最佳角度即为 45 度。
 
 \newpage
 
-\subsection*{Problems}
-
-The following exercises walk you through the derivation sketched above and extend the idea to a slightly more general setting.
-
-\begin{assumptions}
-  \item Flat, level ground; uniform gravity $\arr{g} = -g\,\hat{\mathbf{y}}$; no air resistance.
-  \item The vector triangle is formed by $\arr{v}_{0}$, $\arr{g}t$, and $\arr{v}$ at the instant of landing ($y = 0$).
-  \item In Q3 the launch point is elevated: $y(0) = h$, $y(t_{\text{land}}) = 0$.
-\end{assumptions}
-
 \begin{questions}
-  \item \textbf{Area in terms of range.}
-        Consider the same scenario as the example above (ground-to-ground).
-        Prove that the area of the vector triangle is
-        \[
-          S = \tfrac{1}{2}\,gx,
-        \]
-        where $x$ is the horizontal range of the projectile.
+  \item \textbf{矢量三角形的面积.}
+    考虑与上述示例相同的场景，证明该矢量三角形的面积为
+    \[ S = \frac 1 2 g x \]
 
   \item \textbf{Area in angular form.}
-        For the same scenario, show that the area can also be written as
-        \[
-          S = \tfrac{1}{2}\,v_{0}^{2}\sin 2\theta
-            = -\tfrac{1}{2}\,v_{0}^{2}\sin 2\alpha,
-        \]
-        where $\alpha$ is the angle between $\arr{v}_{0}$ and $\arr{v}$.  Use either expression to confirm that the range is maximised at $\theta = 45^{\circ}$.
+  考虑与上述示例相同的场景，证明该矢量三角形的面积为
+  \[ 
+  \begin{aligned}
+  S &= \frac 1 2 v_0^2 \sin {2 \theta}  \\
+  &= - \frac 1 2 v_0^2 \sin {2 \alpha}
+  \end{aligned}
+  \]
 
-  \item \textbf{Non-zero launch height.}
-        Now the mass is launched from $y = h > 0$ and lands at $y = 0$ (all else unchanged).  Determine the angle $\theta$ that maximises the horizontal distance $L$.  No resistance of any kind.
-
-        \textit{Hint:} the vector-triangle idea generalizes --- think about what changes when the launch and landing heights differ.
+  \item \textbf{非零高度斜抛.}
+  考虑一个与上述示例中略有不同的情形：此时物体不再从 $y=0$ 处出 发，而是从 $y=h$ 处被抛出，落到 $y=0$ 处，求使得其水平飞行距离 $L$ 最远的 角度 $\theta$。无任何其他阻力。
 \end{questions}
 
 \end{problem}
