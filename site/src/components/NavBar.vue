@@ -119,8 +119,20 @@ watch(() => route.fullPath, () => {
 /* Mobile: hamburger on the right; menu drops down from the top as a floating
    panel on a higher z-level, with a shadow — same design, just overlaid. */
 @media (max-width: 640px) {
+  /* Tighten the desktop-sized gaps so the brand and the two right-side
+     controls (locale toggle + hamburger) fit on one line, even on very
+     narrow phones, and read as one grouped cluster instead of drifting apart. */
+  .nav {
+    gap: var(--s2);
+    padding-left: 1rem;
+    padding-right: 1rem;
+    flex-wrap: nowrap;
+  }
   .hamburger {
     display: flex;
+    /* The flex gap already separates it from the locale toggle; drop the
+       extra margin so the two controls sit tight together on the right. */
+    margin-left: 0;
   }
   .menu {
     display: none;
